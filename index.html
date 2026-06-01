@@ -1,1553 +1,784 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conscientia 2026 — Finance Brochure</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  <style>
-  /* ─── TOKENS ─── */
-  :root {
-    --bg: #060a10;
-    --surface: #0d1420;
-    --surface2: #111a2a;
-    --ink: #f0ede6;
-    --ink-dim: rgba(240,237,230,0.55);
-    --gold: #c8a84b;
-    --gold-dim: rgba(200,168,75,0.18);
-    --gold-glow: rgba(200,168,75,0.35);
-    --blue: #2A3F6B;
-    --rule: rgba(30,42,61,0.9);
-    --rule-bright: rgba(200,168,75,0.25);
-    --muted: #6B7A94;
-    --ff-display: 'Syne', sans-serif;
-    --ff-body: 'EB Garamond', serif;
-    --ff-mono: 'IBM Plex Mono', monospace;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conscientia 2026 — Finance Brochure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a10;
+  --surface: #0d1420;
+  --surface2: #111a2a;
+  --ink: #f0ede6;
+  --ink-dim: rgba(240,237,230,0.55);
+  --gold: #c8a84b;
+  --gold-dim: rgba(200,168,75,0.18);
+  --gold-glow: rgba(200,168,75,0.35);
+  --blue: #2A3F6B;
+  --rule: rgba(30,42,61,0.9);
+  --rule-bright: rgba(200,168,75,0.25);
+  --muted: #6B7A94;
+  --ff-display: 'Syne', sans-serif;
+  --ff-body: 'EB Garamond', serif;
+  --ff-mono: 'IBM Plex Mono', monospace;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: var(--ff-body); overflow-x: hidden; cursor: none; }
 
-  /* ─── RESET ─── */
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--ff-body);
-    overflow-x: hidden;
-    cursor: none;
-  }
+#cursor { position:fixed; width:10px; height:10px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transition:transform 0.15s ease,opacity 0.3s; mix-blend-mode:screen; }
+#cursor-ring { position:fixed; width:36px; height:36px; border:1px solid rgba(200,168,75,0.5); border-radius:50%; pointer-events:none; z-index:9998; transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),width 0.3s,height 0.3s,opacity 0.3s; }
+body:has(a:hover) #cursor,body:has(button:hover) #cursor { transform:scale(2.5); }
+body:has(a:hover) #cursor-ring,body:has(button:hover) #cursor-ring { width:56px; height:56px; opacity:0.4; }
 
-  /* ─── CURSOR ─── */
-  #cursor {
-    position: fixed;
-    width: 10px; height: 10px;
-    background: var(--gold);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.15s ease, opacity 0.3s;
-    mix-blend-mode: screen;
-  }
-  #cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: 1px solid rgba(200,168,75,0.5);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), width 0.3s, height 0.3s, opacity 0.3s;
-  }
-  body:has(a:hover) #cursor, body:has(button:hover) #cursor { transform: scale(2.5); }
-  body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 56px; height: 56px; opacity: 0.4; }
+#starfield { position:fixed; inset:0; z-index:0; pointer-events:none; }
 
-  /* ─── CANVAS STARFIELD ─── */
-  #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#nav { position:fixed; top:0; left:0; right:0; z-index:500; height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; border-bottom:0.5px solid var(--rule); background:rgba(6,10,16,0.75); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); transition:background 0.4s; }
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* This controls the empty space between the logo and text */
+  font-family: var(--ff-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
 
-  /* ─── NAV ─── */
-  #nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 500;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 48px;
-    border-bottom: 0.5px solid var(--rule);
-    background: rgba(6,10,16,0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    transition: background 0.4s;
-  }
-  .nav-logo {
-    font-family: var(--ff-display);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-  }
-  .nav-links {
-    display: flex; gap: 32px; list-style: none;
-  }
-  .nav-links a {
-    font-family: var(--ff-mono);
-    font-size: 0.58rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: color 0.25s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-  .nav-pill {
-    font-family: var(--ff-mono);
-    font-size: 0.55rem;
-    color: var(--bg);
-    background: var(--gold);
-    padding: 6px 16px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .nav-pill:hover { opacity: 0.8; }
+/* Sizing for your new logo */
+.nav-icon {
+  height: 50px; /* Keeps it perfectly proportioned inside the 56px nav bar */
+  width: auto;
+  object-fit: contain;
+}
+.nav-divider {
+  height: 20px;
+  width: 1px;
+  background: var(--rule-bright); /* Uses your existing gold-tinted border color */
+  opacity: 0.5;
+  margin: 0 4px; 
+}
+.nav-links { display:flex; gap:32px; list-style:none; }
+.nav-links a { font-family:var(--ff-mono); font-size:0.58rem; color:var(--muted); text-decoration:none; letter-spacing:0.12em; text-transform:uppercase; transition:color 0.25s; }
+.nav-links a:hover { color:var(--gold); }
+.nav-pill { font-family:var(--ff-mono); font-size:0.55rem; color:var(--bg); background:var(--gold); padding:6px 16px; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; transition:opacity 0.2s; }
+.nav-pill:hover { opacity:0.8; }
 
-  /* ─── PROGRESS BAR ─── */
-  #progress {
-    position: fixed;
-    top: 0; left: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--gold), #e8c870);
-    z-index: 600;
-    width: 0%;
-    transition: width 0.1s linear;
-  }
+#progress { position:fixed; top:0; left:0; height:2px; background:linear-gradient(90deg,var(--gold),#e8c870); z-index:600; width:0%; transition:width 0.1s linear; }
 
-  /* ─── SECTION BASE ─── */
-  section {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .inner { max-width: 1080px; margin: 0 auto; padding: 0 48px; width: 100%; }
+section { position:relative; z-index:10; min-height:100vh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
+.inner { max-width:1080px; margin:0 auto; padding:0 48px; width:100%; }
+.vline { position:absolute; top:0; bottom:0; width:0.5px; background:var(--rule); z-index:1; }
+.label { font-family:var(--ff-mono); font-size:0.6rem; color:var(--gold); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:16px; }
+.label-muted { color:var(--muted); }
+.hr { width:100%; height:0.5px; background:var(--rule); margin:24px 0; }
+.hr-gold { background:var(--rule-bright); }
 
-  /* ─── GRID LINE decoration ─── */
-  .vline {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 0.5px;
-    background: var(--rule);
-    z-index: 1;
-  }
+.reveal { opacity:0; transform:translateY(32px); transition:opacity 0.8s cubic-bezier(0.23,1,0.32,1),transform 0.8s cubic-bezier(0.23,1,0.32,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+.reveal-delay-4 { transition-delay:0.4s; }
+.reveal-delay-5 { transition-delay:0.5s; }
+.reveal-delay-6 { transition-delay:0.6s; }
 
-  /* ─── LABEL ─── */
-  .label {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    color: var(--gold);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .label-muted { color: var(--muted); }
+#hero { min-height:100vh; justify-content:flex-end; padding-bottom:80px; }
+.hero-bg { position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at 80% 30%,rgba(200,168,75,0.06) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(42,63,107,0.15) 0%,transparent 60%); }
+.hero-orbit { position:absolute; border-radius:50%; border:0.5px solid rgba(200,168,75,0.06); animation:spin 60s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.hero-orbit-1 { width:900px; height:900px; top:-300px; right:-200px; animation-duration:80s; }
+.hero-orbit-2 { width:600px; height:600px; top:-100px; right:50px; animation-duration:50s; animation-direction:reverse; border-color:rgba(200,168,75,0.04); }
+.hero-eyebrow { font-family:var(--ff-mono); font-size:0.6rem; color:var(--muted); letter-spacing:0.3em; text-transform:uppercase; margin-bottom:20px; }
+.hero-title { font-family:var(--ff-display); font-size:clamp(4.5rem,12vw,9rem); font-weight:800; line-height:0.85; letter-spacing:-0.04em; color:var(--ink); margin-bottom:24px; overflow:hidden; }
+.hero-title span { display:block; }
+.hero-title .gold-word { color:var(--gold); }
+.hero-sub { font-family:var(--ff-display); font-size:1rem; letter-spacing:0.4em; color:var(--muted); text-transform:uppercase; margin-bottom:40px; }
+.hero-bottom { display:flex; align-items:flex-end; justify-content:space-between; margin-top:40px; }
+.hero-desc { font-family:var(--ff-body); font-size:1rem; color:var(--ink-dim); line-height:1.7; max-width:380px; }
+.hero-badge { font-family:var(--ff-mono); font-size:0.55rem; color:var(--muted); letter-spacing:0.15em; text-align:right; line-height:2; text-transform:uppercase; }
+.cta-btn { display:inline-flex; align-items:center; gap:12px; margin-top:32px; font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); text-decoration:none; border:0.5px solid var(--gold-dim); padding:14px 28px; transition:background 0.25s,border-color 0.25s; position:relative; overflow:hidden; }
+.cta-btn::before { content:''; position:absolute; inset:0; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform 0.35s cubic-bezier(0.23,1,0.32,1); z-index:0; }
+.cta-btn:hover::before { transform:scaleX(1); }
+.cta-btn:hover { color:var(--bg); border-color:var(--gold); }
+.cta-btn span { position:relative; z-index:1; }
+.arrow { display:inline-block; transition:transform 0.25s; }
+.cta-btn:hover .arrow { transform:translateX(6px); }
 
-  /* ─── HAIRLINE ─── */
-  .hr { width: 100%; height: 0.5px; background: var(--rule); margin: 24px 0; }
-  .hr-gold { background: var(--rule-bright); }
+.ticker-wrap { background:var(--gold); overflow:hidden; height:40px; display:flex; align-items:center; position:relative; z-index:20; }
+.ticker { display:flex; white-space:nowrap; animation:ticker 25s linear infinite; }
+.ticker span { font-family:var(--ff-mono); font-size:0.6rem; font-weight:500; letter-spacing:0.15em; color:var(--bg); padding:0 32px; text-transform:uppercase; }
+.ticker-dot { color:var(--bg); opacity:0.4; }
+@keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 
-  /* ─── REVEAL ANIMATIONS ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.8s cubic-bezier(0.23,1,0.32,1), transform 0.8s cubic-bezier(0.23,1,0.32,1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-  .reveal-delay-4 { transition-delay: 0.4s; }
-  .reveal-delay-5 { transition-delay: 0.5s; }
-  .reveal-delay-6 { transition-delay: 0.6s; }
+#institution { padding:120px 0; }
+.inst-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.inst-heading { font-family:var(--ff-display); font-size:clamp(2rem,4vw,3.2rem); font-weight:700; letter-spacing:-0.03em; color:var(--ink); line-height:1.05; margin-bottom:24px; }
+.inst-body { font-family:var(--ff-body); font-size:1.05rem; color:var(--ink-dim); line-height:1.75; margin-bottom:32px; }
+.inst-right { display:flex; flex-direction:column; gap:12px; }
+.fact-card { background:var(--surface); border:0.5px solid var(--rule); border-left:2px solid var(--gold); padding:16px 20px; display:flex; align-items:center; gap:20px; transition:background 0.25s,transform 0.25s; }
+.fact-card:hover { background:var(--surface2); transform:translateX(4px); }
+.fact-num { font-family:var(--ff-display); font-size:1.8rem; font-weight:800; color:var(--gold); letter-spacing:-0.04em; min-width:72px; line-height:1; }
+.fact-text { font-family:var(--ff-mono); font-size:0.62rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; line-height:1.5; }
+.guides-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:24px; }
+.guide-item { font-family:var(--ff-body); font-size:0.88rem; color:var(--ink); padding:8px 0; border-bottom:0.5px solid var(--rule); display:flex; align-items:center; gap:8px; }
+.guide-item::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--gold); flex-shrink:0; }
 
-  /* ═══════════════════════════════════════ HERO */
-  #hero {
-    min-height: 100vh;
-    justify-content: flex-end;
-    padding-bottom: 80px;
-  }
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(200,168,75,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(42,63,107,0.15) 0%, transparent 60%);
-  }
-  .hero-orbit {
-    position: absolute;
-    border-radius: 50%;
-    border: 0.5px solid rgba(200,168,75,0.06);
-    animation: spin 60s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .hero-orbit-1 { width: 900px; height: 900px; top: -300px; right: -200px; animation-duration: 80s; }
-  .hero-orbit-2 { width: 600px; height: 600px; top: -100px; right: 50px; animation-duration: 50s; animation-direction: reverse; border-color: rgba(200,168,75,0.04); }
+#stats { padding:100px 0; background:linear-gradient(180deg,transparent,rgba(13,20,32,0.8),transparent); }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; }
+.stat-item { padding:48px 32px; border-right:0.5px solid var(--rule); border-top:0.5px solid var(--rule); position:relative; overflow:hidden; transition:background 0.3s; }
+.stat-item:first-child { border-left:0.5px solid var(--rule); }
+.stat-item::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform 0.4s cubic-bezier(0.23,1,0.32,1); }
+.stat-item:hover { background:var(--surface); }
+.stat-item:hover::after { transform:scaleX(1); }
+.stat-num { font-family:var(--ff-display); font-size:clamp(3rem,5vw,5rem); font-weight:800; color:var(--gold); letter-spacing:-0.05em; line-height:0.9; margin-bottom:12px; }
+.stat-label { font-family:var(--ff-mono); font-size:0.58rem; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; }
 
-  .hero-eyebrow {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    color: var(--muted);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .hero-title {
-    font-family: var(--ff-display);
-    font-size: clamp(4.5rem, 12vw, 9rem);
-    font-weight: 800;
-    line-height: 0.85;
-    letter-spacing: -0.04em;
-    color: var(--ink);
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-  .hero-title span { display: block; }
-  .hero-title .gold-word { color: var(--gold); }
-  .hero-sub {
-    font-family: var(--ff-display);
-    font-size: 1rem;
-    letter-spacing: 0.4em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 40px;
-  }
-  .hero-bottom {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-top: 40px;
-  }
-  .hero-desc {
-    font-family: var(--ff-body);
-    font-size: 1rem;
-    color: var(--ink-dim);
-    line-height: 1.7;
-    max-width: 380px;
-  }
-  .hero-badge {
-    font-family: var(--ff-mono);
-    font-size: 0.55rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-align: right;
-    line-height: 2;
-    text-transform: uppercase;
-  }
-  .cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 32px;
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    text-decoration: none;
-    border: 0.5px solid var(--gold-dim);
-    padding: 14px 28px;
-    transition: background 0.25s, border-color 0.25s;
-    position: relative;
-    overflow: hidden;
-  }
-  .cta-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.35s cubic-bezier(0.23,1,0.32,1);
-    z-index: 0;
-  }
-  .cta-btn:hover::before { transform: scaleX(1); }
-  .cta-btn:hover { color: var(--bg); border-color: var(--gold); }
-  .cta-btn span { position: relative; z-index: 1; }
-  .arrow { display: inline-block; transition: transform 0.25s; }
-  .cta-btn:hover .arrow { transform: translateX(6px); }
+#legacy { padding:120px 0; }
+.legacy-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); margin-top:40px; }
+.legacy-card { background:var(--bg); padding:36px 32px; position:relative; overflow:hidden; transition:background 0.3s; }
+.legacy-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,var(--gold),transparent); opacity:0; transition:opacity 0.3s; }
+.legacy-card:hover { background:var(--surface); }
+.legacy-card:hover::before { opacity:1; }
+.legacy-role { font-family:var(--ff-mono); font-size:0.55rem; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px; }
+.legacy-name { font-family:var(--ff-display); font-size:1.1rem; font-weight:700; color:var(--ink); margin-bottom:4px; }
+.legacy-desc { font-family:var(--ff-body); font-size:0.85rem; font-style:italic; color:var(--muted); line-height:1.5; }
+.legacy-num { position:absolute; bottom:20px; right:24px; font-family:var(--ff-display); font-size:4rem; font-weight:800; color:var(--ink); opacity:0.04; line-height:1; }
 
-  /* ═══════════════════════════════════════ TICKER */
-  .ticker-wrap {
-    background: var(--gold);
-    overflow: hidden;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 20;
-  }
-  .ticker {
-    display: flex;
-    white-space: nowrap;
-    animation: ticker 25s linear infinite;
-  }
-  .ticker span {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    color: var(--bg);
-    padding: 0 32px;
-    text-transform: uppercase;
-  }
-  .ticker-dot { color: var(--bg); opacity: 0.4; }
-  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+#why { padding:120px 0; }
+.why-intro { display:grid; grid-template-columns:1fr 1.6fr; gap:80px; align-items:start; margin-bottom:56px; }
+.why-heading { font-family:var(--ff-display); font-size:clamp(2.5rem,5vw,4rem); font-weight:800; letter-spacing:-0.04em; line-height:0.92; color:var(--ink); position:sticky; top:100px; }
+.why-heading .accent { color:var(--gold); }
+.why-benefits { display:flex; flex-direction:column; gap:0; }
+.benefit-row { display:grid; grid-template-columns:56px 1fr; gap:24px; align-items:start; padding:20px 0; border-bottom:0.5px solid var(--rule); transition:padding-left 0.3s; }
+.benefit-row:hover { padding-left:8px; }
+.benefit-num { font-family:var(--ff-mono); font-size:0.55rem; color:var(--gold); letter-spacing:0.1em; padding-top:4px; }
+.benefit-title { font-family:var(--ff-display); font-size:0.92rem; font-weight:600; color:var(--ink); margin-bottom:4px; }
+.benefit-desc { font-family:var(--ff-body); font-size:0.85rem; font-style:italic; color:var(--muted); line-height:1.55; }
 
-  /* ═══════════════════════════════════════ ABOUT / INSTITUTION */
-  #institution { padding: 120px 0; }
-  .inst-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-  .inst-left {}
-  .inst-heading {
-    font-family: var(--ff-display);
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    line-height: 1.05;
-    margin-bottom: 24px;
-  }
-  .inst-body {
-    font-family: var(--ff-body);
-    font-size: 1.05rem;
-    color: var(--ink-dim);
-    line-height: 1.75;
-    margin-bottom: 32px;
-  }
-  .inst-right { display: flex; flex-direction: column; gap: 12px; }
-  .fact-card {
-    background: var(--surface);
-    border: 0.5px solid var(--rule);
-    border-left: 2px solid var(--gold);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    transition: background 0.25s, transform 0.25s;
-  }
-  .fact-card:hover { background: var(--surface2); transform: translateX(4px); }
-  .fact-num {
-    font-family: var(--ff-display);
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--gold);
-    letter-spacing: -0.04em;
-    min-width: 72px;
-    line-height: 1;
-  }
-  .fact-text {
-    font-family: var(--ff-mono);
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: 1.5;
-  }
-  .guides-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-top: 24px;
-  }
-  .guide-item {
-    font-family: var(--ff-body);
-    font-size: 0.88rem;
-    color: var(--ink);
-    padding: 8px 0;
-    border-bottom: 0.5px solid var(--rule);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .guide-item::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+#tiers { padding:120px 0; }
+.tiers-heading { font-family:var(--ff-display); font-size:clamp(2rem,4vw,3.2rem); font-weight:800; letter-spacing:-0.04em; color:var(--ink); margin-bottom:12px; }
+.tier-tabs { display:flex; gap:0; border:0.5px solid var(--rule); margin:32px 0 48px; overflow-x:auto; }
+.tier-tab { flex:1; padding:14px 20px; font-family:var(--ff-mono); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); background:none; border:none; border-right:0.5px solid var(--rule); cursor:pointer; transition:background 0.2s,color 0.2s; white-space:nowrap; }
+.tier-tab:last-child { border-right:none; }
+.tier-tab:hover { color:var(--ink); background:var(--surface); }
+.tier-tab.active { background:var(--gold); color:var(--bg); font-weight:600; }
+.tier-panel { display:none; }
+.tier-panel.active { display:block; animation:fadeUp 0.4s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.tier-panel-header { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:32px; padding-bottom:24px; border-bottom:0.5px solid var(--rule-bright); }
+.tier-name { font-family:var(--ff-display); font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; color:var(--ink); letter-spacing:-0.04em; }
+.tier-price { font-family:var(--ff-mono); font-size:2rem; color:var(--gold); letter-spacing:-0.02em; }
+.tier-slots { font-family:var(--ff-mono); font-size:0.6rem; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:24px; }
+.tier-benefits-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.tier-benefit { display:flex; gap:16px; padding:16px; background:var(--surface); border:0.5px solid var(--rule); border-left:2px solid var(--gold-dim); transition:border-left-color 0.2s,background 0.2s; }
+.tier-benefit:hover { border-left-color:var(--gold); background:var(--surface2); }
+.tb-num { font-family:var(--ff-mono); font-size:0.55rem; color:var(--gold); min-width:24px; margin-top:2px; }
+.tb-title { font-family:var(--ff-display); font-size:0.82rem; color:var(--ink); margin-bottom:3px; }
+.tb-desc { font-family:var(--ff-body); font-size:0.78rem; font-style:italic; color:var(--muted); line-height:1.4; }
 
-  /* ═══════════════════════════════════════ STATS */
-  #stats {
-    padding: 100px 0;
-    background: linear-gradient(180deg, transparent, rgba(13,20,32,0.8), transparent);
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-  .stat-item {
-    padding: 48px 32px;
-    border-right: 0.5px solid var(--rule);
-    border-top: 0.5px solid var(--rule);
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-  .stat-item:first-child { border-left: 0.5px solid var(--rule); }
-  .stat-item::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
-  }
-  .stat-item:hover { background: var(--surface); }
-  .stat-item:hover::after { transform: scaleX(1); }
-  .stat-num {
-    font-family: var(--ff-display);
-    font-size: clamp(3rem, 5vw, 5rem);
-    font-weight: 800;
-    color: var(--gold);
-    letter-spacing: -0.05em;
-    line-height: 0.9;
-    margin-bottom: 12px;
-  }
-  .stat-label {
-    font-family: var(--ff-mono);
-    font-size: 0.58rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
+.tier-table-wrap { margin-top:56px; overflow:hidden; border:0.5px solid var(--rule); }
+.tier-table { width:100%; border-collapse:collapse; }
+.tier-table thead tr { background:var(--gold); }
+.tier-table thead th { font-family:var(--ff-mono); font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--bg); padding:12px 16px; text-align:left; }
+.tier-table thead th:last-child { text-align:right; }
+.tier-table tbody tr { border-bottom:0.5px solid var(--rule); transition:background 0.2s; }
+.tier-table tbody tr:nth-child(even) { background:var(--surface); }
+.tier-table tbody tr:hover { background:rgba(200,168,75,0.05); }
+.tier-table td { font-family:var(--ff-mono); font-size:0.65rem; padding:11px 16px; color:var(--ink); }
+.tier-table td:last-child { text-align:right; color:var(--gold); }
+.tier-table .tier-tag { font-size:0.52rem; letter-spacing:0.12em; padding:3px 8px; border:0.5px solid currentColor; }
+.t1 { color:var(--gold); border-left:2px solid var(--gold); }
+.t2 { color:#7B8EA8; border-left:2px solid #7B8EA8; }
+.t3 { color:#3A4F6A; border-left:2px solid #3A4F6A; }
+.t4 { color:var(--muted); border-left:2px solid var(--rule); }
 
-  /* ═══════════════════════════════════════ LEGACY */
-  #legacy { padding: 120px 0; }
-  .legacy-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--rule);
-    margin-top: 40px;
-  }
-  .legacy-card {
-    background: var(--bg);
-    padding: 36px 32px;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-  .legacy-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .legacy-card:hover { background: var(--surface); }
-  .legacy-card:hover::before { opacity: 1; }
-  .legacy-role {
-    font-family: var(--ff-mono);
-    font-size: 0.55rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .legacy-name {
-    font-family: var(--ff-display);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 4px;
-  }
-  .legacy-desc {
-    font-family: var(--ff-body);
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .legacy-num {
-    position: absolute;
-    bottom: 20px; right: 24px;
-    font-family: var(--ff-display);
-    font-size: 4rem;
-    font-weight: 800;
-    color: var(--ink);
-    opacity: 0.04;
-    line-height: 1;
-  }
+/* ═══ SPONSORS MARQUEE — fixed seamless loop ═══
+   Key principle: the .marquee-belt is width:max-content so it's as wide
+   as BOTH tracks combined. Animation moves it by exactly -50% (= 1 track width).
+   When track A disappears off the left, track B (identical) is already in view.
+   At the loop point the belt jumps back to 0 — perfectly invisible.
+*/
+#sponsors { padding:80px 0; border-top:0.5px solid var(--rule); }
 
-  /* ═══════════════════════════════════════ WHY SPONSOR */
-  #why { padding: 120px 0; }
-  .why-intro {
-    display: grid;
-    grid-template-columns: 1fr 1.6fr;
-    gap: 80px;
-    align-items: start;
-    margin-bottom: 56px;
-  }
-  .why-heading {
-    font-family: var(--ff-display);
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 0.92;
-    color: var(--ink);
-    position: sticky;
-    top: 100px;
-  }
-  .why-heading .accent { color: var(--gold); }
-  .why-benefits {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .benefit-row {
-    display: grid;
-    grid-template-columns: 56px 1fr;
-    gap: 24px;
-    align-items: start;
-    padding: 20px 0;
-    border-bottom: 0.5px solid var(--rule);
-    transition: padding-left 0.3s;
-  }
-  .benefit-row:hover { padding-left: 8px; }
-  .benefit-num {
-    font-family: var(--ff-mono);
-    font-size: 0.55rem;
-    color: var(--gold);
-    letter-spacing: 0.1em;
-    padding-top: 4px;
-  }
-  .benefit-title {
-    font-family: var(--ff-display);
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 4px;
-  }
-  .benefit-desc {
-    font-family: var(--ff-body);
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--muted);
-    line-height: 1.55;
-  }
+.sponsors-marquee-wrap {
+  overflow: hidden;
+  margin-top: 32px;
+  width: 100%;
+  /* Soft fade at both edges */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
 
-  /* ═══════════════════════════════════════ TIERS */
-  #tiers { padding: 120px 0; }
-  .tiers-heading {
-    font-family: var(--ff-display);
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    color: var(--ink);
-    margin-bottom: 12px;
-  }
+/* The belt — never use overflow:hidden on this */
+.marquee-belt {
+  display: flex;          /* children (two tracks) sit side by side */
+  width: max-content;     /* width = both tracks combined               */
+  will-change: transform;
+}
 
-  /* TIER TABS */
-  .tier-tabs {
-    display: flex;
-    gap: 0;
-    border: 0.5px solid var(--rule);
-    margin: 32px 0 48px;
-    overflow-x: auto;
-  }
-  .tier-tab {
-    flex: 1;
-    padding: 14px 20px;
-    font-family: var(--ff-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: none;
-    border: none;
-    border-right: 0.5px solid var(--rule);
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    white-space: nowrap;
-  }
-  .tier-tab:last-child { border-right: none; }
-  .tier-tab:hover { color: var(--ink); background: var(--surface); }
-  .tier-tab.active { background: var(--gold); color: var(--bg); font-weight: 600; }
+.marquee-belt--left  { animation: marqLeft  36s linear infinite; }
+.marquee-belt--right { animation: marqRight 28s linear infinite; }
 
-  /* TIER PANELS */
-  .tier-panel { display: none; }
-  .tier-panel.active { display: block; animation: fadeUp 0.4s ease; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+/* Pause entire row on hover — nice UX for sponsor logos */
+.sponsors-marquee-wrap:hover .marquee-belt { animation-play-state: paused; }
 
-  .tier-panel-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 0.5px solid var(--rule-bright);
-  }
-  .tier-name {
-    font-family: var(--ff-display);
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 800;
-    color: var(--ink);
-    letter-spacing: -0.04em;
-  }
-  .tier-price {
-    font-family: var(--ff-mono);
-    font-size: 2rem;
-    color: var(--gold);
-    letter-spacing: -0.02em;
-  }
-  .tier-slots {
-    font-family: var(--ff-mono);
-    font-size: 0.6rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
+/* One copy of the logo list — two of these sit inside each belt */
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 10px;  /* must equal gap so seam is seamless */
+  flex-shrink: 0;
+}
 
-  .tier-benefits-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .tier-benefit {
-    display: flex;
-    gap: 16px;
-    padding: 16px;
-    background: var(--surface);
-    border: 0.5px solid var(--rule);
-    border-left: 2px solid var(--gold-dim);
-    transition: border-left-color 0.2s, background 0.2s;
-  }
-  .tier-benefit:hover { border-left-color: var(--gold); background: var(--surface2); }
-  .tb-num { font-family: var(--ff-mono); font-size: 0.55rem; color: var(--gold); min-width: 24px; margin-top: 2px; }
-  .tb-text {}
-  .tb-title { font-family: var(--ff-display); font-size: 0.82rem; color: var(--ink); margin-bottom: 3px; }
-  .tb-desc { font-family: var(--ff-body); font-size: 0.78rem; font-style: italic; color: var(--muted); line-height: 1.4; }
+/* Move belt left: 0 → -50% = exactly one track width */
+@keyframes marqLeft  { 0% { transform: translateX(0); }    100% { transform: translateX(-50%); } }
+/* Move belt right: -50% → 0 = one track width in reverse */
+@keyframes marqRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); }    }
 
-  /* ═══════════════════════════════════════ TIER TABLE */
-  .tier-table-wrap { margin-top: 56px; overflow: hidden; border: 0.5px solid var(--rule); }
-  .tier-table { width: 100%; border-collapse: collapse; }
-  .tier-table thead tr { background: var(--gold); }
-  .tier-table thead th {
-    font-family: var(--ff-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--bg);
-    padding: 12px 16px;
-    text-align: left;
-  }
-  .tier-table thead th:last-child { text-align: right; }
-  .tier-table tbody tr {
-    border-bottom: 0.5px solid var(--rule);
-    transition: background 0.2s;
-  }
-  .tier-table tbody tr:nth-child(even) { background: var(--surface); }
-  .tier-table tbody tr:hover { background: rgba(200,168,75,0.05); }
-  .tier-table td {
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    padding: 11px 16px;
-    color: var(--ink);
-  }
-  .tier-table td:last-child { text-align: right; color: var(--gold); }
-  .tier-table .tier-tag {
-    font-size: 0.52rem;
-    letter-spacing: 0.12em;
-    padding: 3px 8px;
-    border: 0.5px solid currentColor;
-  }
-  .t1 { color: var(--gold); border-left: 2px solid var(--gold); }
-  .t2 { color: #7B8EA8; border-left: 2px solid #7B8EA8; }
-  .t3 { color: #3A4F6A; border-left: 2px solid #3A4F6A; }
-  .t4 { color: var(--muted); border-left: 2px solid var(--rule); }
+/* ── chip (the box) ── */
+.sponsor-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  min-width: 168px;
+  max-width: 400px;
+  padding: 0 22px;
+  background: var(--surface);
+  border: 0.5px solid rgba(30,42,61,0.95);
+  flex-shrink: 0;
+  transition: border-color 0.22s, background 0.22s, transform 0.22s;
+}
+.sponsor-chip:hover {
+  border-color: rgba(200,168,75,0.35);
+  background: var(--surface2);
+  transform: translateY(-3px);
+}
+/* ── logo image inside chip ── */
+.sponsor-chip img {
+  display: block;
+  max-height: 180px;
+  max-width: 300px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: opacity 0.22s;
+  /* Filter removed temporarily so you can see the real images */
+}
+.sponsor-chip:hover img { opacity: 1; }
 
-  /* ═══════════════════════════════════════ SPONSORS MARQUEE */
-  #sponsors { padding: 80px 0; border-top: 0.5px solid var(--rule); }
+/* Milma uses base64 inline — skip invert so it doesn't go pure white blob */
+.sponsor-chip.keep-colour img {
+  filter: none;
+  opacity: 0.80;
+}
+.sponsor-chip.keep-colour:hover img { opacity: 1; }
 
-  .sponsors-marquee-wrap { 
-    overflow: hidden; 
-    margin-top: 32px; 
-    width: 100%;
-  }
+#contact { padding:120px 0; }
+.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.contact-heading { font-family:var(--ff-display); font-size:clamp(3rem,6vw,5.5rem); font-weight:800; letter-spacing:-0.05em; line-height:0.88; color:var(--ink); margin-bottom:32px; }
+.contact-heading .gold { color:var(--gold); }
+.contact-body { font-family:var(--ff-body); font-size:1rem; color:var(--ink-dim); line-height:1.7; margin-bottom:32px; }
+.contact-email { font-family:var(--ff-mono); font-size:0.75rem; color:var(--gold); letter-spacing:0.08em; padding:16px 0; border-top:0.5px solid var(--rule-bright); border-bottom:0.5px solid var(--rule-bright); margin-top:8px; }
+.contact-cards { display:flex; flex-direction:column; gap:12px; }
+.contact-card { background:var(--surface); border:0.5px solid var(--rule); padding:24px; position:relative; overflow:hidden; transition:background 0.25s,transform 0.25s; }
+.contact-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--gold); }
+.contact-card:hover { background:var(--surface2); transform:translateX(4px); }
+.cc-role { font-family:var(--ff-mono); font-size:0.55rem; color:var(--gold); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:8px; }
+.cc-name { font-family:var(--ff-display); font-size:1.1rem; font-weight:700; color:var(--ink); margin-bottom:6px; }
+.cc-phone { font-family:var(--ff-mono); font-size:0.78rem; color:var(--muted); letter-spacing:0.05em; }
 
-  .sponsors-marquee {
-    display: flex;
-  }
+footer { position:relative; z-index:10; padding:64px 48px 40px; border-top:0.5px solid var(--rule); background:var(--surface); }
+.footer-top { display:flex; align-items:flex-start; justify-content:space-between; gap:40px; flex-wrap:wrap; margin-bottom:40px; }
+.footer-brand { font-family:var(--ff-display); font-size:3rem; font-weight:800; letter-spacing:-0.05em; color:var(--ink); opacity:0.08; line-height:1; }
+.footer-links { display:flex; flex-direction:column; gap:8px; }
+.footer-links a { font-family:var(--ff-mono); font-size:0.62rem; color:var(--muted); text-decoration:none; letter-spacing:0.08em; transition:color 0.2s; }
+.footer-links a:hover { color:var(--gold); }
+.footer-bottom { display:flex; align-items:center; justify-content:space-between; padding-top:24px; border-top:0.5px solid var(--rule); font-family:var(--ff-mono); font-size:0.55rem; color:var(--muted); letter-spacing:0.1em; flex-wrap:wrap; gap:8px; }
 
-  /* The continuous track */
-  .marquee-track {
-    display: flex;
-    align-items: center; /* PERFECT VERTICAL CENTERING */
-    gap: 16px;
-    padding-right: 16px; /* Must match gap for seamless loop */
-    animation: scrollLeft 30s linear infinite;
-  }
+.scroll-indicator { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; animation:bobble 2s ease-in-out infinite; }
+@keyframes bobble { 0%,100% { transform:translateX(-50%) translateY(0); } 50% { transform:translateX(-50%) translateY(8px); } }
+.si-line { width:0.5px; height:40px; background:linear-gradient(to bottom,var(--gold),transparent); }
+.si-label { font-family:var(--ff-mono); font-size:0.5rem; color:var(--muted); letter-spacing:0.2em; text-transform:uppercase; }
 
-  /* Reverse track */
-  .sponsors-marquee2 .marquee-track { 
-    animation: scrollRight 10s linear infinite;
-  }
+#toast { position:fixed; bottom:32px; right:32px; z-index:1000; background:var(--gold); color:var(--bg); font-family:var(--ff-mono); font-size:0.65rem; letter-spacing:0.12em; padding:12px 24px; transform:translateY(80px); opacity:0; transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),opacity 0.4s; pointer-events:none; }
+#toast.show { transform:translateY(0); opacity:1; }
 
-  @keyframes scrollLeft { 
-    from { transform: translateX(0); } 
-    to { transform: translateX(-100%); } 
-  }
+@media (max-width:768px) {
+  .inst-grid,.why-intro,.tier-benefits-grid,.contact-grid { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .legacy-grid { grid-template-columns:1fr; }
+  .stat-item:nth-child(2n) { border-right:0.5px solid var(--rule); }
+  .nav-links { display:none; }
+  #nav { padding:0 24px; }
+  .inner { padding:0 24px; }
+  footer { padding:48px 24px 32px; }
+}
+</style>
+</head>
+<body>
 
-  @keyframes scrollRight { 
-    from { transform: translateX(-100%); } 
-    to { transform: translateX(0); } 
-  }
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="progress"></div>
+<canvas id="starfield"></canvas>
+<div id="toast">COPIED TO CLIPBOARD</div>
 
-  /* The Cool Boxes - THICK & PREMIUM */
-  .sponsor-chip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;            /* BIG BOX HEIGHT */
-    min-width: 400px;        /* BIG BOX WIDTH */
-    padding: 10px  10px;         /* SIDE PADDING */
-    border: 0.5px solid var(--rule);
-    background: var(--surface);
-    flex-shrink: 0;
-    border-radius: 6px;
-    box-sizing: border-box;
-    transition: border-color 0.2s, background 0.2s, transform 0.2s;
-  }
+<nav id="nav">
+  <div class="nav-logo">
+    <!-- IIST Logo -->
+    <img src="https://upload.wikimedia.org/wikipedia/en/e/ec/Indian_Institute_of_Space_Science_and_Technology_Logo.svg" alt="IIST" class="nav-icon">
+    
+    <!-- Subtle Divider -->
+    <div class="nav-divider"></div>
+    
+    <!-- Conscientia Logo -->
+    <img src="https://media.licdn.com/dms/image/v2/D5603AQEIgCfyJRaDQQ/profile-displayphoto-scale_400_400/B56Z4RtIGIH8Ag-/0/1778413504054?e=1781740800&v=beta&t=Lwo8KFCM8mjhEXzHqzkRINunM6TN_cg-YRK7qdJAB2M" alt="C" class="nav-icon">
+    <span>Conscientia 2026</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#institution">Institute</a></li>
+    <li><a href="#stats">Numbers</a></li>
+    <li><a href="#why">Opportunity</a></li>
+    <li><a href="#tiers">Tiers</a></li>
+    <li><a href="#sponsors">Past Sponsors</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:financeteam.conscientia@gmail.com" class="nav-pill">Get in Touch</a>
+</nav>
 
-  .sponsor-chip:hover { 
-    border-color: var(--gold-dim); 
-    background: var(--surface2); 
-    transform: translateY(-4px); 
-  }
-
-  /* Hard Lock Logo Sizing */
-  .sponsor-chip img {
-    display: inline-block;
-    max-height: 200px;        /* BIG LOGO HEIGHT */
-    max-width: 400px;        /* BIG LOGO WIDTH */
-    width: auto;
-    height: auto;
-    object-fit: contain;
-  }
-  /* ═══════════════════════════════════════ CONTACT */
-  #contact { padding: 120px 0; }
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-  .contact-left {}
-  .contact-heading {
-    font-family: var(--ff-display);
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    line-height: 0.88;
-    color: var(--ink);
-    margin-bottom: 32px;
-  }
-  .contact-heading .gold { color: var(--gold); }
-  .contact-body { font-family: var(--ff-body); font-size: 1rem; color: var(--ink-dim); line-height: 1.7; margin-bottom: 32px; }
-  .contact-email {
-    font-family: var(--ff-mono);
-    font-size: 0.75rem;
-    color: var(--gold);
-    letter-spacing: 0.08em;
-    padding: 16px 0;
-    border-top: 0.5px solid var(--rule-bright);
-    border-bottom: 0.5px solid var(--rule-bright);
-    margin-top: 8px;
-  }
-  .contact-right {}
-  .contact-cards { display: flex; flex-direction: column; gap: 12px; }
-  .contact-card {
-    background: var(--surface);
-    border: 0.5px solid var(--rule);
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.25s, transform 0.25s;
-  }
-  .contact-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 2px;
-    background: var(--gold);
-  }
-  .contact-card:hover { background: var(--surface2); transform: translateX(4px); }
-  .cc-role {
-    font-family: var(--ff-mono);
-    font-size: 0.55rem;
-    color: var(--gold);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .cc-name {
-    font-family: var(--ff-display);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 6px;
-  }
-  .cc-phone {
-    font-family: var(--ff-mono);
-    font-size: 0.78rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
-  /* ═══════════════════════════════════════ FOOTER */
-  footer {
-    position: relative;
-    z-index: 10;
-    padding: 64px 48px 40px;
-    border-top: 0.5px solid var(--rule);
-    background: var(--surface);
-  }
-  .footer-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 40px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
-  }
-  .footer-brand {
-    font-family: var(--ff-display);
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    color: var(--ink);
-    opacity: 0.08;
-    line-height: 1;
-  }
-  .footer-links { display: flex; flex-direction: column; gap: 8px; }
-  .footer-links a {
-    font-family: var(--ff-mono);
-    font-size: 0.62rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    transition: color 0.2s;
-  }
-  .footer-links a:hover { color: var(--gold); }
-  .footer-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 24px;
-    border-top: 0.5px solid var(--rule);
-    font-family: var(--ff-mono);
-    font-size: 0.55rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  /* ═══════════════════════════════════════ SCROLL INDICATOR */
-  .scroll-indicator {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    animation: bobble 2s ease-in-out infinite;
-  }
-  @keyframes bobble { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
-  .si-line { width: 0.5px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent); }
-  .si-label { font-family: var(--ff-mono); font-size: 0.5rem; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
-
-  /* ─── TOAST ─── */
-  #toast {
-    position: fixed;
-    bottom: 32px; right: 32px;
-    z-index: 1000;
-    background: var(--gold);
-    color: var(--bg);
-    font-family: var(--ff-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    padding: 12px 24px;
-    transform: translateY(80px);
-    opacity: 0;
-    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.4s;
-    pointer-events: none;
-  }
-  #toast.show { transform: translateY(0); opacity: 1; }
-
-  /* responsive */
-  @media (max-width: 768px) {
-    .inst-grid, .why-intro, .tier-benefits-grid, .contact-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2,1fr); }
-    .legacy-grid { grid-template-columns: 1fr; }
-    .stat-item:nth-child(2n) { border-right: 0.5px solid var(--rule); }
-    .nav-links { display: none; }
-    #nav { padding: 0 24px; }
-    .inner { padding: 0 24px; }
-    footer { padding: 48px 24px 32px; }
-  }
-  </style>
-  </head>
-  <body>
-
-  <!-- Cursor -->
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-
-  <!-- Progress bar -->
-  <div id="progress"></div>
-
-  <!-- Starfield canvas -->
-  <canvas id="starfield"></canvas>
-
-  <!-- Toast -->
-  <div id="toast">COPIED TO CLIPBOARD</div>
-
-  <!-- ─── NAV ─── -->
-  <nav id="nav">
-    <div class="nav-logo">Conscientia 2026</div>
-    <ul class="nav-links">
-      <li><a href="#institution">Institute</a></li>
-      <li><a href="#stats">Numbers</a></li>
-      <li><a href="#why">Opportunity</a></li>
-      <li><a href="#tiers">Tiers</a></li>
-      <li><a href="#sponsors">Past Sponsors</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <a href="mailto:financeteam.conscientia@gmail.com" class="nav-pill">Get in Touch</a>
-  </nav>
-
-  <!-- ═══════════════════════════════════════ HERO -->
-  <section id="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-orbit hero-orbit-1"></div>
-    <div class="hero-orbit hero-orbit-2"></div>
-    <div class="vline" style="left: 48px;"></div>
-
-    <div class="inner" style="padding-top: 56px;">
-      <p class="hero-eyebrow reveal">17th Edition &nbsp;·&nbsp; Indian Institute of Space Science & Technology &nbsp;·&nbsp; Dept. of Space, Govt. of India</p>
-      <div class="hero-title reveal reveal-delay-1">
-        <span>CON</span>
-        <span class="gold-word">SCIEN</span>
-        <span>TIA</span>
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-orbit hero-orbit-1"></div>
+  <div class="hero-orbit hero-orbit-2"></div>
+  <div class="vline" style="left:48px;"></div>
+  <div class="inner" style="padding-top:56px;">
+    <p class="hero-eyebrow reveal">17th Edition &nbsp;·&nbsp; Indian Institute of Space Science & Technology &nbsp;·&nbsp; Dept. of Space, Govt. of India</p>
+    <div class="hero-title reveal reveal-delay-1">
+      <span>CON</span>
+      <span class="gold-word">SCIEN</span>
+      <span>TIA</span>
+    </div>
+    <p class="hero-sub reveal reveal-delay-2">Finance Brochure &nbsp;—&nbsp; 2026</p>
+    <div class="hero-bottom reveal reveal-delay-3">
+      <div>
+        <p class="hero-desc">India's only space-dedicated technical festival. Your brand, in the orbit of the future.</p>
+        <a href="#tiers" class="cta-btn"><span>View Sponsorship Tiers</span><span class="arrow">→</span></a>
       </div>
-      <p class="hero-sub reveal reveal-delay-2">Finance Brochure &nbsp;—&nbsp; 2026</p>
-      <div class="hero-bottom reveal reveal-delay-3">
-        <div>
-          <p class="hero-desc">India's only space-dedicated technical festival. Your brand, in the orbit of the future.</p>
-          <a href="#tiers" class="cta-btn"><span>View Sponsorship Tiers</span><span class="arrow">→</span></a>
+      <div class="hero-badge reveal reveal-delay-4">
+        NAAC A++ Accredited<br>First Space Uni in Asia<br>Third in the World<br>
+        <span style="color:var(--gold)">8.5°N 76.9°E — Thiruvananthapuram</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator"><div class="si-line"></div><div class="si-label">Scroll</div></div>
+</section>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>6,000+ Footfall</span><span class="ticker-dot">◆</span>
+    <span>30+ Events</span><span class="ticker-dot">◆</span>
+    <span>50K+ Social Reach</span><span class="ticker-dot">◆</span>
+    <span>10+ Workshops</span><span class="ticker-dot">◆</span>
+    <span>100+ Colleges</span><span class="ticker-dot">◆</span>
+    <span>15 States</span><span class="ticker-dot">◆</span>
+    <span>17th Edition</span><span class="ticker-dot">◆</span>
+    <span>IIST · Dept. of Space</span><span class="ticker-dot">◆</span>
+    <span>6,000+ Footfall</span><span class="ticker-dot">◆</span>
+    <span>30+ Events</span><span class="ticker-dot">◆</span>
+    <span>50K+ Social Reach</span><span class="ticker-dot">◆</span>
+    <span>10+ Workshops</span><span class="ticker-dot">◆</span>
+    <span>100+ Colleges</span><span class="ticker-dot">◆</span>
+    <span>15 States</span><span class="ticker-dot">◆</span>
+    <span>17th Edition</span><span class="ticker-dot">◆</span>
+    <span>IIST · Dept. of Space</span><span class="ticker-dot">◆</span>
+  </div>
+</div>
+
+<section id="institution">
+  <div class="inner">
+    <div class="inst-grid">
+      <div>
+        <p class="label reveal">01 — Institution</p>
+        <h2 class="inst-heading reveal reveal-delay-1">India's only<br>space university.</h2>
+        <div class="hr reveal reveal-delay-2"></div>
+        <p class="inst-body reveal reveal-delay-2">Established in 2007 by the Department of Space, Government of India, with full support from ISRO. IIST is India's premier institute dedicated entirely to space science and technology.</p>
+        <div class="guides-grid reveal reveal-delay-3">
+          <div class="guide-item">Dr. APJ Abdul Kalam</div>
+          <div class="guide-item">Dr. S. Somanath</div>
+          <div class="guide-item">Dr. V. Narayanan</div>
+          <div class="guide-item">Dr. BN Suresh</div>
+          <div class="guide-item">Dr. S. Unnikrishnan Nair</div>
+          <div class="guide-item">Dr. Dipankar Banerjee</div>
         </div>
-        <div class="hero-badge reveal reveal-delay-4">
-          NAAC A++ Accredited<br>
-          First Space Uni in Asia<br>
-          Third in the World<br>
-          <span style="color:var(--gold)">8.5°N 76.9°E — Thiruvananthapuram</span>
+      </div>
+      <div class="inst-right reveal reveal-delay-2">
+        <div class="fact-card"><div class="fact-num">2007</div><div class="fact-text">Founded by Dept. of Space,<br>Govt. of India</div></div>
+        <div class="fact-card"><div class="fact-num">A++</div><div class="fact-text">NAAC Accredited — Highest Grade</div></div>
+        <div class="fact-card"><div class="fact-num">#1</div><div class="fact-text">First space-dedicated university in Asia</div></div>
+        <div class="fact-card"><div class="fact-num">#3</div><div class="fact-text">Third space university in the world</div></div>
+        <div class="fact-card"><div class="fact-num">17th</div><div class="fact-text">Edition of Conscientia — Annual Tech Fest</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="inner">
+    <p class="label reveal">04 — By the Numbers</p>
+    <div class="stats-grid">
+      <div class="stat-item reveal"><div class="stat-num">6K+</div><div class="stat-label">Footfall</div></div>
+      <div class="stat-item reveal reveal-delay-1"><div class="stat-num">30+</div><div class="stat-label">Events</div></div>
+      <div class="stat-item reveal reveal-delay-2"><div class="stat-num">50K+</div><div class="stat-label">Social Media Reach</div></div>
+      <div class="stat-item reveal reveal-delay-3"><div class="stat-num">10+</div><div class="stat-label">Workshops</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="legacy">
+  <div class="inner">
+    <p class="label reveal">02 — Legacy</p>
+    <h2 style="font-family:var(--ff-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin-bottom:8px;" class="reveal reveal-delay-1">India's Space Legacy</h2>
+    <p style="font-family:var(--ff-body);font-style:italic;color:var(--muted);margin-bottom:0;" class="reveal reveal-delay-2">The shoulders on which India's space programme stands.</p>
+    <div class="legacy-grid reveal reveal-delay-2">
+      <div class="legacy-card"><div class="legacy-role">External Affairs Minister</div><div class="legacy-name">Dr. S. Jaishankar</div><div class="legacy-desc">India's Space Diplomacy — champion of international space cooperation</div><div class="legacy-num">01</div></div>
+      <div class="legacy-card"><div class="legacy-role">NASA Astronaut</div><div class="legacy-name">Sunita Williams</div><div class="legacy-desc">ISS Commander — Indian-origin pioneer of human spaceflight</div><div class="legacy-num">02</div></div>
+      <div class="legacy-card"><div class="legacy-role">India's First Astronaut</div><div class="legacy-name">Rakesh Sharma</div><div class="legacy-desc">Soyuz T-11, 1984 — first Indian citizen to travel to space</div><div class="legacy-num">03</div></div>
+      <div class="legacy-card"><div class="legacy-role">ISRO-Axiom Mission</div><div class="legacy-name">Shubhanshu Shukla</div><div class="legacy-desc">Ax-4, 2025 — India's newest face in human spaceflight</div><div class="legacy-num">04</div></div>
+    </div>
+    <p style="font-family:var(--ff-body);font-size:0.88rem;font-style:italic;color:var(--muted);margin-top:24px;padding-left:16px;border-left:1px solid var(--rule);" class="reveal">IIST alumni now work directly alongside these figures in India's space programme.</p>
+  </div>
+</section>
+
+<section id="why" style="background:linear-gradient(180deg,transparent,rgba(13,20,32,0.6),transparent);">
+  <div class="inner">
+    <div class="why-intro">
+      <div>
+        <p class="label reveal">05 — The Opportunity</p>
+        <h2 class="why-heading reveal reveal-delay-1">Why<br>sponsor<br><span class="accent">us?</span></h2>
+      </div>
+      <div>
+        <p style="font-family:var(--ff-body);font-size:1.05rem;color:var(--ink-dim);line-height:1.75;margin-bottom:40px;" class="reveal">Conscientia is the only technical festival in India hosted inside an active space research ecosystem. Your brand reaches students who will work at ISRO, HAL, and India's emerging private space companies.</p>
+        <div class="why-benefits">
+          <div class="benefit-row reveal"><div class="benefit-num">01.</div><div><div class="benefit-title">Talent Pipeline Access</div><div class="benefit-desc">Direct recruitment reach into India's only space-dedicated talent pool.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-1"><div class="benefit-num">02.</div><div><div class="benefit-title">Brand Authority in Space Sector</div><div class="benefit-desc">Association with a Dept. of Space institution is unmatched in the engineering market.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-2"><div class="benefit-num">03.</div><div><div class="benefit-title">Dedicated Promo Content</div><div class="benefit-desc">Title sponsors receive a dedicated video on our YouTube channel and social media.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-3"><div class="benefit-num">04.</div><div><div class="benefit-title">Live Product Demos & Kiosks</div><div class="benefit-desc">Set up branded stalls and experiential zones on IIST campus during the 3-day fest.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-4"><div class="benefit-num">05.</div><div><div class="benefit-title">Opening Ceremony Speech</div><div class="benefit-desc">Address 1,000+ engineers, faculty, and guests at the inaugural event.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-5"><div class="benefit-num">06.</div><div><div class="benefit-title">CSR Recognition</div><div class="benefit-desc">IIST qualifies as an eligible partner under Schedule VII CSR mandates for STEM education.</div></div></div>
+          <div class="benefit-row reveal"><div class="benefit-num">07.</div><div><div class="benefit-title">Measurable Post-Event Report</div><div class="benefit-desc">Engagement data, footfall stats, and photo documentation within 15 days.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-1"><div class="benefit-num">08.</div><div><div class="benefit-title">National Media Coverage</div><div class="benefit-desc">Press coverage in The Hindu, regional STEM media, and IIST communications.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-2"><div class="benefit-num">09.</div><div><div class="benefit-title">Webinar Hosting</div><div class="benefit-desc">Reach registered participants directly via Conscientia's YouTube channel.</div></div></div>
+          <div class="benefit-row reveal reveal-delay-3"><div class="benefit-num">10.</div><div><div class="benefit-title">Event Co-Naming Rights</div><div class="benefit-desc">Your brand attached to a named event — 'Presented by [Company]'.</div></div></div>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="scroll-indicator">
-      <div class="si-line"></div>
-      <div class="si-label">Scroll</div>
+<section id="tiers">
+  <div class="inner">
+    <p class="label reveal">06 — Sponsorship Tiers</p>
+    <h2 class="tiers-heading reveal reveal-delay-1">Sponsorship Tiers</h2>
+    <p style="font-family:var(--ff-body);font-style:italic;color:var(--muted);font-size:0.9rem;" class="reveal reveal-delay-2">Select a tier below to explore benefits. Prices to be confirmed shortly.</p>
+    <div class="tier-tabs reveal reveal-delay-2">
+      <button class="tier-tab active" onclick="switchTier('title',this)">Title</button>
+      <button class="tier-tab" onclick="switchTier('associate',this)">Associate</button>
+      <button class="tier-tab" onclick="switchTier('hackathon',this)">Hackathon</button>
+      <button class="tier-tab" onclick="switchTier('cansat',this)">CanSat</button>
+      <button class="tier-tab" onclick="switchTier('workshop',this)">Workshop</button>
+      <button class="tier-tab" onclick="switchTier('social',this)">Social Cause</button>
+      <button class="tier-tab" onclick="switchTier('expo',this)">Expo</button>
     </div>
-  </section>
 
-  <!-- ─── TICKER ─── -->
-  <div class="ticker-wrap">
-    <div class="ticker">
-      <span>6,000+ Footfall</span><span class="ticker-dot">◆</span>
-      <span>30+ Events</span><span class="ticker-dot">◆</span>
-      <span>50K+ Social Reach</span><span class="ticker-dot">◆</span>
-      <span>10+ Workshops</span><span class="ticker-dot">◆</span>
-      <span>100+ Colleges</span><span class="ticker-dot">◆</span>
-      <span>15 States</span><span class="ticker-dot">◆</span>
-      <span>17th Edition</span><span class="ticker-dot">◆</span>
-      <span>IIST · Dept. of Space</span><span class="ticker-dot">◆</span>
-      <span>6,000+ Footfall</span><span class="ticker-dot">◆</span>
-      <span>30+ Events</span><span class="ticker-dot">◆</span>
-      <span>50K+ Social Reach</span><span class="ticker-dot">◆</span>
-      <span>10+ Workshops</span><span class="ticker-dot">◆</span>
-      <span>100+ Colleges</span><span class="ticker-dot">◆</span>
-      <span>15 States</span><span class="ticker-dot">◆</span>
-      <span>17th Edition</span><span class="ticker-dot">◆</span>
-      <span>IIST · Dept. of Space</span><span class="ticker-dot">◆</span>
+    <div class="tier-panel active" id="panel-title">
+      <div class="tier-panel-header"><div><div class="tier-name">Title Sponsor</div><div class="tier-slots">Tier I &nbsp;·&nbsp; Exclusive — 1 Slot Only</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Festival Name Rights</div><div class="tb-desc">Event recognized as co-presented by your company.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Priority Logo Placement</div><div class="tb-desc">Logo position #1 across all physical and digital collateral.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Opening Ceremony Speech</div><div class="tb-desc">Dedicated address slot at inaugural event.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Dedicated Promo Video</div><div class="tb-desc">Produced and published on our YouTube channel.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">2 Webinar Slots</div><div class="tb-desc">Host 2 sessions on your product/technology via Conscientia's platform.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Campus Kiosk Rights</div><div class="tb-desc">Full-assistance stall setup inside IIST campus.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as event judge.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to all participants.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">09.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Prominently listed as Title and Leading Sponsor.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">10.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">11.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Full engagement data within 15 days of festival.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">12.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible for CSR credit under Schedule VII STEM education mandate.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-panel" id="panel-associate">
+      <div class="tier-panel-header"><div><div class="tier-name">Associate Sponsor</div><div class="tier-slots">Tier II &nbsp;·&nbsp; 2 Slots Available</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as Associate Sponsor across all collaterals.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Dedicated Promo Video</div><div class="tb-desc">Produced and published on our YouTube channel.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">1 Webinar Slot</div><div class="tb-desc">Host a session via Conscientia's platform.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Opening Ceremony Speech</div><div class="tb-desc">Dedicated address slot at inaugural event.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Stall Setup Rights</div><div class="tb-desc">Branded stall on IIST campus during the festival.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as event judge.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to participants.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">09.</div><div><div class="tb-title">Post-Event Engagement Report</div><div class="tb-desc">Full engagement data within 15 days.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">10.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible under Schedule VII CSR mandates for STEM education.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-panel" id="panel-hackathon">
+      <div class="tier-panel-header"><div><div class="tier-name">Hackathon Sponsor</div><div class="tier-slots">Tier II &nbsp;·&nbsp; 3 Slots Available</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Customised Event Segment</div><div class="tb-desc">Branded hackathon challenge tailored to your company's domain.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Problem Statement Co-Creation</div><div class="tb-desc">Problem designed in collaboration with IIST faculty.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as Hackathon Sponsor across all collaterals.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">1 Webinar Slot</div><div class="tb-desc">Host a session via Conscientia's platform.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Stall Setup Rights</div><div class="tb-desc">Branded presence on IIST campus during the festival.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as hackathon judge.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to hackathon participants.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">09.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Full engagement data delivered within 15 days.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">10.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible under Schedule VII CSR mandates for STEM education.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-panel" id="panel-cansat">
+      <div class="tier-panel-header"><div><div class="tier-name">CanSat Sponsor</div><div class="tier-slots">Tier II &nbsp;·&nbsp; 1 Slot Available</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">CanSat Event Co-Naming</div><div class="tb-desc">Your brand attached to India's premier student satellite competition.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as CanSat Sponsor across all collaterals.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as CanSat judge.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Stall Setup Rights</div><div class="tb-desc">Branded presence on IIST campus during the festival.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to CanSat participants.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Full engagement data within 15 days.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible under Schedule VII STEM education mandate.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-panel" id="panel-workshop">
+      <div class="tier-panel-header"><div><div class="tier-name">Workshop Sponsor</div><div class="tier-slots">Tier III &nbsp;·&nbsp; Multiple Slots</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Workshop Co-Naming</div><div class="tb-desc">Your brand on a dedicated workshop session.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Logo on Collaterals</div><div class="tb-desc">Listed across banners, posts, and campaign materials.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Stall Rights at Workshop</div><div class="tb-desc">Branded presence at workshop sessions.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Engagement data within 15 days.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-panel" id="panel-social">
+      <div class="tier-panel-header"><div><div class="tier-name">Social Cause Sponsor</div><div class="tier-slots">Tier III &nbsp;·&nbsp; Open Slots</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Official Social Impact Partner</div><div class="tb-desc">Listed across all collaterals as Official Social Impact Partner.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Panel Discussion & Booth</div><div class="tb-desc">Dedicated space for awareness building and outreach.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Cause-Focused Event/Workshop</div><div class="tb-desc">Dedicated cause-focused event or workshop.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Logo on All Materials</div><div class="tb-desc">Logo on banners, posts, campaign materials.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Student Club Collaboration</div><div class="tb-desc">Collaborative initiative with IIST student clubs.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">On-Ground Activation Space</div><div class="tb-desc">CSR mandate aligned activation on campus.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Speaking Slot</div><div class="tb-desc">Address audience at cause-related sessions.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Co-Branded Outreach</div><div class="tb-desc">Co-branded outreach across Conscientia's platforms.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-panel" id="panel-expo">
+      <div class="tier-panel-header"><div><div class="tier-name">Expo Sponsor</div><div class="tier-slots">Tier IV &nbsp;·&nbsp; Open Slots</div></div><div class="tier-price">₹ [TBC]</div></div>
+      <div class="tier-benefits-grid">
+        <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Branded Booth in Expo Zone</div><div class="tb-desc">Full setup support in the main expo area.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as Expo Sponsor across all collaterals.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across Conscientia channels.</div></div></div>
+        <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Engagement data within 15 days.</div></div></div>
+      </div>
+    </div>
+
+    <div class="tier-table-wrap reveal" style="margin-top:56px;">
+      <table class="tier-table">
+        <thead><tr><th>Sponsorship Type</th><th>Slots</th><th>Tier</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr class="t1"><td>Title Sponsor</td><td>1</td><td><span class="tier-tag">TIER I</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t2"><td>Associate Sponsor</td><td>2</td><td><span class="tier-tag">TIER II</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t2"><td>Hackathon Sponsor</td><td>3</td><td><span class="tier-tag">TIER II</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t2"><td>CanSat Sponsor</td><td>1</td><td><span class="tier-tag">TIER II</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t3"><td>Workshop Sponsor</td><td>—</td><td><span class="tier-tag">TIER III</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t3"><td>Event Sponsor</td><td>—</td><td><span class="tier-tag">TIER III</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t3"><td>Social Cause</td><td>—</td><td><span class="tier-tag">TIER III</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t4"><td>Expo Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t4"><td>Travel Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t4"><td>Hospitality Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t4"><td>Media Partner</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t4"><td>Logistics Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
+          <tr class="t4"><td>Educational Partner</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-family:var(--ff-body);font-style:italic;font-size:0.82rem;color:var(--muted);margin-top:16px;" class="reveal">All sponsorships include a post-event engagement report delivered within 15 days of the festival.</p>
+  </div>
+</section>
+
+<!-- ═══ PAST SPONSORS ═══ -->
+<section id="sponsors" style="padding:100px 0;">
+  <div class="inner">
+    <p class="label reveal">11 — Previous Sponsors</p>
+    <h2 style="font-family:var(--ff-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin-bottom:8px;" class="reveal reveal-delay-1">They trusted us.</h2>
+    <p style="font-family:var(--ff-body);font-style:italic;color:var(--muted);margin-bottom:40px;" class="reveal reveal-delay-2">Brands from space, auto, gaming, FMCG, and finance.</p>
+  </div>
+
+  <!-- ROW 1 — Space & Tech logos, scrolls left -->
+  <div class="sponsors-marquee-wrap reveal">
+    <div class="marquee-belt marquee-belt--left">
+      <div class="marquee-track">
+        <div class="sponsor-chip"><img src="https://cdn.prod.website-files.com/67fd1716df7556ab97191c1c/67ff42c9251ae6b792c9cfc4_Skyroot%20Logo.webp" alt="Skyroot Aerospace"></div>
+        <div class="sponsor-chip"><img src="https://framerusercontent.com/assets/ovw9sGfYYEv4xyzpXgGSMAvwQ.png" alt="Bellatrix Aerospace"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxbV1uRvUNiuhfUAaYN_a0ngtobRyayGv4IQ&s" alt="CDAC"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSldTOwKw3HL0UIYEXr9Qqogplm5oBAX0ztYg&s" alt="Satsure"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjta2-T6dd9T9Q0HWtogyzq1DSumo6EPu-8A&s" alt="NSIL"></div>
+        <div class="sponsor-chip"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Logo_SKIFI.png" alt="SkyFi"></div>
+        <div class="sponsor-chip"><img src="https://rocketeers.in/wp-content/uploads//5-02-1.png" alt="Rocketeers"></div>
+        <div class="sponsor-chip"><img src="https://d502jbuhuh9wk.cloudfront.net/logos/643fcab0e4b0dacc7ae246bf.png?v=12" alt="Pacelab"></div>
+        <div class="sponsor-chip"><img src="https://www.aeronsystems.com/assets/images/resources/aeron%20Logo%20white.webp" alt="Aeron"></div>
+        <div class="sponsor-chip"><img src="https://quadratech.in/logo.png" alt="Quadratech"></div>
+        <div class="sponsor-chip"><img src="https://static.wixstatic.com/media/b99f19_971ff836cb0a491180f8bc81bff40442~mv2.png/v1/fill/w_376,h_212,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/NOPO(White).png" alt="Nobo Nanotechnologies"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgGNeDpEjlLIawpPBPe2NfjfVv_MfkuKNDxQ&s" alt="Aeronautical Society of India"></div>
+      </div>
+      <!-- duplicate track — identical, seamless loop -->
+      <div class="marquee-track">
+        <div class="sponsor-chip"><img src="https://cdn.prod.website-files.com/67fd1716df7556ab97191c1c/67ff42c9251ae6b792c9cfc4_Skyroot%20Logo.webp" alt="Skyroot Aerospace"></div>
+        <div class="sponsor-chip"><img src="https://framerusercontent.com/assets/ovw9sGfYYEv4xyzpXgGSMAvwQ.png" alt="Bellatrix Aerospace"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxbV1uRvUNiuhfUAaYN_a0ngtobRyayGv4IQ&s" alt="CDAC"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSldTOwKw3HL0UIYEXr9Qqogplm5oBAX0ztYg&s" alt="Satsure"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjta2-T6dd9T9Q0HWtogyzq1DSumo6EPu-8A&s" alt="NSIL"></div>
+        <div class="sponsor-chip"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Logo_SKIFI.png" alt="SkyFi"></div>
+        <div class="sponsor-chip"><img src="https://rocketeers.in/wp-content/uploads//5-02-1.png" alt="Rocketeers"></div>
+        <div class="sponsor-chip"><img src="https://d502jbuhuh9wk.cloudfront.net/logos/643fcab0e4b0dacc7ae246bf.png?v=12" alt="Pacelab"></div>
+        <div class="sponsor-chip"><img src="https://www.aeronsystems.com/assets/images/resources/aeron%20Logo%20white.webp" alt="Aeron"></div>
+        <div class="sponsor-chip"><img src="https://quadratech.in/logo.png" alt="Quadratech"></div>
+        <div class="sponsor-chip"><img src="https://static.wixstatic.com/media/b99f19_971ff836cb0a491180f8bc81bff40442~mv2.png/v1/fill/w_376,h_212,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/NOPO(White).png" alt="Nobo Nanotechnologies"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgGNeDpEjlLIawpPBPe2NfjfVv_MfkuKNDxQ&s" alt="Aeronautical Society of India"></div>
+      </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════ INSTITUTION -->
-  <section id="institution">
-    <div class="inner">
-      <div class="inst-grid">
-        <div>
-          <p class="label reveal">01 — Institution</p>
-          <h2 class="inst-heading reveal reveal-delay-1">India's only<br>space university.</h2>
-          <div class="hr reveal reveal-delay-2"></div>
-          <p class="inst-body reveal reveal-delay-2">Established in 2007 by the Department of Space, Government of India, with full support from ISRO. IIST is India's premier institute dedicated entirely to space science and technology.</p>
-          <div class="guides-grid reveal reveal-delay-3">
-            <div class="guide-item">Dr. APJ Abdul Kalam</div>
-            <div class="guide-item">Dr. S. Somanath</div>
-            <div class="guide-item">Dr. V. Narayanan</div>
-            <div class="guide-item">Dr. BN Suresh</div>
-            <div class="guide-item">Dr. S. Unnikrishnan Nair</div>
-            <div class="guide-item">Dr. Dipankar Banerjee</div>
-          </div>
-        </div>
-        <div class="inst-right reveal reveal-delay-2">
-          <div class="fact-card">
-            <div class="fact-num">2007</div>
-            <div class="fact-text">Founded by Dept. of Space,<br>Govt. of India</div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-num">A++</div>
-            <div class="fact-text">NAAC Accredited — Highest Grade</div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-num">#1</div>
-            <div class="fact-text">First space-dedicated university in Asia</div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-num">#3</div>
-            <div class="fact-text">Third space university in the world</div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-num">17th</div>
-            <div class="fact-text">Edition of Conscientia — Annual Tech Fest</div>
-          </div>
-        </div>
+  <!-- ROW 2 — Industry & Lifestyle, scrolls right -->
+  <div class="sponsors-marquee-wrap reveal" style="margin-top:12px;">
+    <div class="marquee-belt marquee-belt--right">
+      <div class="marquee-track">
+        <div class="sponsor-chip"><img src="https://cimg1.ibsrv.net/ibimg/hgm/1920x1080-1/100/715/vw-logo_100715297.jpg" alt="Volkswagen"></div>
+        <div class="sponsor-chip"><img src="https://images.indianexpress.com/2022/07/Krafton_Logo1.jpg?w=1200" alt="Krafton"></div>
+        <div class="sponsor-chip"><img src="https://nodwingaming.com/wp-content/uploads/2024/10/Nodwin-logonew-1.png" alt="Nodwin Gaming"></div>
+        <div class="sponsor-chip"><img src="https://www.wowmomo.com/wp-content/uploads/2019/09/Wow_logo_website.png" alt="WOW Momo"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjIlDTuzKjg_d9bt16VCspqhfppIyx0okuYg&s" alt="Domino's"></div>
+        <div class="sponsor-chip"><img src="https://images.financialexpressdigital.com/2026/01/Copy-of-Copy-of-Gallery-25.jpg" alt="Union Bank of India"></div>
+        <div class="sponsor-chip"><img src="https://healthinsurancesahihai.com/wp-content/uploads/2024/02/nialogo-org.jpg" alt="New India Assurance"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXVq2v1csTZcJ_gYS0hl61j5vwq_Rl1o6yw&s" alt="Grahaa"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT057NUUlpukJQj_robp-4H58anDeAR7tHw5A&s" alt="SPACE Empowering Life"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7vGH8eWqpj5tbJcftP7rhssHZhJbjBBuFRQ&s" alt="TDI"></div>
+      </div>
+      <div class="marquee-track">
+        <div class="sponsor-chip"><img src="https://cimg1.ibsrv.net/ibimg/hgm/1920x1080-1/100/715/vw-logo_100715297.jpg" alt="Volkswagen"></div>
+        <div class="sponsor-chip"><img src="https://images.indianexpress.com/2022/07/Krafton_Logo1.jpg?w=1200" alt="Krafton"></div>
+        <div class="sponsor-chip"><img src="https://nodwingaming.com/wp-content/uploads/2024/10/Nodwin-logonew-1.png" alt="Nodwin Gaming"></div>
+        <div class="sponsor-chip"><img src="https://www.wowmomo.com/wp-content/uploads/2019/09/Wow_logo_website.png" alt="WOW Momo"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjIlDTuzKjg_d9bt16VCspqhfppIyx0okuYg&s" alt="Domino's"></div>
+        <div class="sponsor-chip"><img src="https://images.financialexpressdigital.com/2026/01/Copy-of-Copy-of-Gallery-25.jpg" alt="Union Bank of India"></div>
+        <div class="sponsor-chip"><img src="https://healthinsurancesahihai.com/wp-content/uploads/2024/02/nialogo-org.jpg" alt="New India Assurance"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXVq2v1csTZcJ_gYS0hl61j5vwq_Rl1o6yw&s" alt="Grahaa"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT057NUUlpukJQj_robp-4H58anDeAR7tHw5A&s" alt="SPACE Empowering Life"></div>
+        <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7vGH8eWqpj5tbJcftP7rhssHZhJbjBBuFRQ&s" alt="TDI"></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ═══════════════════════════════════════ STATS -->
-  <section id="stats">
-    <div class="inner">
-      <p class="label reveal">04 — By the Numbers</p>
-      <div class="stats-grid">
-        <div class="stat-item reveal">
-          <div class="stat-num" data-target="6000" data-suffix="K+">6K+</div>
-          <div class="stat-label">Footfall</div>
+<section id="contact">
+  <div class="inner">
+    <div class="contact-grid">
+      <div>
+        <p class="label reveal">12 — Contact</p>
+        <h2 class="contact-heading reveal reveal-delay-1">Let's<br><span class="gold">talk.</span></h2>
+        <p class="contact-body reveal reveal-delay-2">Ready to be part of India's most exciting space-tech festival? Reach out to our finance team and we'll get back to you within 24 hours.</p>
+        <div class="contact-email reveal reveal-delay-3" style="cursor:pointer;" onclick="copyEmail()">
+          financeteam.conscientia@gmail.com <span style="font-size:0.5rem;opacity:0.5;margin-left:12px;">CLICK TO COPY</span>
         </div>
-        <div class="stat-item reveal reveal-delay-1">
-          <div class="stat-num">30+</div>
-          <div class="stat-label">Events</div>
-        </div>
-        <div class="stat-item reveal reveal-delay-2">
-          <div class="stat-num">50K+</div>
-          <div class="stat-label">Social Media Reach</div>
-        </div>
-        <div class="stat-item reveal reveal-delay-3">
-          <div class="stat-num">10+</div>
-          <div class="stat-label">Workshops</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════ LEGACY -->
-  <section id="legacy">
-    <div class="inner">
-      <p class="label reveal">02 — Legacy</p>
-      <h2 style="font-family:var(--ff-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin-bottom:8px;" class="reveal reveal-delay-1">India's Space Legacy</h2>
-      <p style="font-family:var(--ff-body);font-style:italic;color:var(--muted);margin-bottom:0;" class="reveal reveal-delay-2">The shoulders on which India's space programme stands.</p>
-      <div class="legacy-grid reveal reveal-delay-2">
-        <div class="legacy-card">
-          <div class="legacy-role">External Affairs Minister</div>
-          <div class="legacy-name">Dr. S. Jaishankar</div>
-          <div class="legacy-desc">India's Space Diplomacy — champion of international space cooperation</div>
-          <div class="legacy-num">01</div>
-        </div>
-        <div class="legacy-card">
-          <div class="legacy-role">NASA Astronaut</div>
-          <div class="legacy-name">Sunita Williams</div>
-          <div class="legacy-desc">ISS Commander — Indian-origin pioneer of human spaceflight</div>
-          <div class="legacy-num">02</div>
-        </div>
-        <div class="legacy-card">
-          <div class="legacy-role">India's First Astronaut</div>
-          <div class="legacy-name">Rakesh Sharma</div>
-          <div class="legacy-desc">Soyuz T-11, 1984 — first Indian citizen to travel to space</div>
-          <div class="legacy-num">03</div>
-        </div>
-        <div class="legacy-card">
-          <div class="legacy-role">ISRO-Axiom Mission</div>
-          <div class="legacy-name">Prashanth Nair</div>
-          <div class="legacy-desc">Ax-4, 2025 — India's newest face in human spaceflight</div>
-          <div class="legacy-num">04</div>
-        </div>
-      </div>
-      <p style="font-family:var(--ff-body);font-size:0.88rem;font-style:italic;color:var(--muted);margin-top:24px;padding-left:16px;border-left:1px solid var(--rule);" class="reveal">IIST alumni now work directly alongside these figures in India's space programme.</p>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════ WHY SPONSOR -->
-  <section id="why" style="background: linear-gradient(180deg, transparent, rgba(13,20,32,0.6), transparent);">
-    <div class="inner">
-      <div class="why-intro">
-        <div>
-          <p class="label reveal">05 — The Opportunity</p>
-          <h2 class="why-heading reveal reveal-delay-1">Why<br>sponsor<br><span class="accent">us?</span></h2>
-        </div>
-        <div>
-          <p style="font-family:var(--ff-body);font-size:1.05rem;color:var(--ink-dim);line-height:1.75;margin-bottom:40px;" class="reveal">Conscientia is the only technical festival in India hosted inside an active space research ecosystem. Your brand reaches students who will work at ISRO, HAL, and India's emerging private space companies.</p>
-          <div class="why-benefits">
-            <div class="benefit-row reveal"><div class="benefit-num">01.</div><div><div class="benefit-title">Talent Pipeline Access</div><div class="benefit-desc">Direct recruitment reach into India's only space-dedicated talent pool.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-1"><div class="benefit-num">02.</div><div><div class="benefit-title">Brand Authority in Space Sector</div><div class="benefit-desc">Association with a Dept. of Space institution is unmatched in the engineering market.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-2"><div class="benefit-num">03.</div><div><div class="benefit-title">Dedicated Promo Content</div><div class="benefit-desc">Title sponsors receive a dedicated video on our YouTube channel and social media.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-3"><div class="benefit-num">04.</div><div><div class="benefit-title">Live Product Demos & Kiosks</div><div class="benefit-desc">Set up branded stalls and experiential zones on IIST campus during the 3-day fest.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-4"><div class="benefit-num">05.</div><div><div class="benefit-title">Opening Ceremony Speech</div><div class="benefit-desc">Address 1,000+ engineers, faculty, and guests at the inaugural event.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-5"><div class="benefit-num">06.</div><div><div class="benefit-title">CSR Recognition</div><div class="benefit-desc">IIST qualifies as an eligible partner under Schedule VII CSR mandates for STEM education.</div></div></div>
-            <div class="benefit-row reveal"><div class="benefit-num">07.</div><div><div class="benefit-title">Measurable Post-Event Report</div><div class="benefit-desc">Engagement data, footfall stats, and photo documentation within 15 days.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-1"><div class="benefit-num">08.</div><div><div class="benefit-title">National Media Coverage</div><div class="benefit-desc">Press coverage in The Hindu, regional STEM media, and IIST communications.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-2"><div class="benefit-num">09.</div><div><div class="benefit-title">Webinar Hosting</div><div class="benefit-desc">Reach registered participants directly via Conscientia's YouTube channel.</div></div></div>
-            <div class="benefit-row reveal reveal-delay-3"><div class="benefit-num">10.</div><div><div class="benefit-title">Event Co-Naming Rights</div><div class="benefit-desc">Your brand attached to a named event — 'Presented by [Company]'.</div></div></div>
+        <div style="margin-top:32px;" class="reveal reveal-delay-4">
+          <p class="label label-muted">Find us online</p>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+            <a href="https://conscientiaiist.co.in" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ www.conscientiaiist.co.in</a>
+            <a href="#" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ instagram.com/conscientia.iist</a>
+            <a href="#" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ youtube.com/Conscientia IIST</a>
+            <a href="#" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ linkedin.com/conscientia-iist</a>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════ TIERS -->
-  <section id="tiers">
-    <div class="inner">
-      <p class="label reveal">06 — Sponsorship Tiers</p>
-      <h2 class="tiers-heading reveal reveal-delay-1">Sponsorship Tiers</h2>
-      <p style="font-family:var(--ff-body);font-style:italic;color:var(--muted);font-size:0.9rem;" class="reveal reveal-delay-2">Select a tier below to explore benefits. Prices to be confirmed shortly.</p>
-
-      <!-- TABS -->
-      <div class="tier-tabs reveal reveal-delay-2">
-        <button class="tier-tab active" onclick="switchTier('title', this)">Title</button>
-        <button class="tier-tab" onclick="switchTier('associate', this)">Associate</button>
-        <button class="tier-tab" onclick="switchTier('hackathon', this)">Hackathon</button>
-        <button class="tier-tab" onclick="switchTier('cansat', this)">CanSat</button>
-        <button class="tier-tab" onclick="switchTier('workshop', this)">Workshop</button>
-        <button class="tier-tab" onclick="switchTier('social', this)">Social Cause</button>
-        <button class="tier-tab" onclick="switchTier('expo', this)">Expo</button>
-      </div>
-
-      <!-- TITLE PANEL -->
-      <div class="tier-panel active" id="panel-title">
-        <div class="tier-panel-header">
-          <div>
-            <div class="tier-name">Title Sponsor</div>
-            <div class="tier-slots">Tier I &nbsp;·&nbsp; Exclusive — 1 Slot Only</div>
-          </div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Festival Name Rights</div><div class="tb-desc">Event recognized as co-presented by your company.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Priority Logo Placement</div><div class="tb-desc">Logo position #1 across all physical and digital collateral.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Opening Ceremony Speech</div><div class="tb-desc">Dedicated address slot at inaugural event.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Dedicated Promo Video</div><div class="tb-desc">Produced and published on our YouTube channel.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">2 Webinar Slots</div><div class="tb-desc">Host 2 sessions on your product/technology via Conscientia's platform.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Campus Kiosk Rights</div><div class="tb-desc">Full-assistance stall setup inside IIST campus.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as event judge.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to all participants.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">09.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Prominently listed as Title and Leading Sponsor.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">10.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">11.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Full engagement data within 15 days of festival.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">12.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible for CSR credit under Schedule VII STEM education mandate.</div></div></div>
-        </div>
-      </div>
-
-      <!-- ASSOCIATE PANEL -->
-      <div class="tier-panel" id="panel-associate">
-        <div class="tier-panel-header">
-          <div><div class="tier-name">Associate Sponsor</div><div class="tier-slots">Tier II &nbsp;·&nbsp; 2 Slots Available</div></div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as Associate Sponsor across all collaterals.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Dedicated Promo Video</div><div class="tb-desc">Produced and published on our YouTube channel.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">1 Webinar Slot</div><div class="tb-desc">Host a session via Conscientia's platform.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Opening Ceremony Speech</div><div class="tb-desc">Dedicated address slot at inaugural event.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Stall Setup Rights</div><div class="tb-desc">Branded stall on IIST campus during the festival.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as event judge.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to participants.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">09.</div><div><div class="tb-title">Post-Event Engagement Report</div><div class="tb-desc">Full engagement data within 15 days.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">10.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible under Schedule VII CSR mandates for STEM education.</div></div></div>
-        </div>
-      </div>
-
-      <!-- HACKATHON PANEL -->
-      <div class="tier-panel" id="panel-hackathon">
-        <div class="tier-panel-header">
-          <div><div class="tier-name">Hackathon Sponsor</div><div class="tier-slots">Tier II &nbsp;·&nbsp; 3 Slots Available</div></div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Customised Event Segment</div><div class="tb-desc">Branded hackathon challenge tailored to your company's domain.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Problem Statement Co-Creation</div><div class="tb-desc">Problem designed in collaboration with IIST faculty.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as Hackathon Sponsor across all collaterals.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">1 Webinar Slot</div><div class="tb-desc">Host a session via Conscientia's platform.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Stall Setup Rights</div><div class="tb-desc">Branded presence on IIST campus during the festival.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as hackathon judge.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to hackathon participants.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">09.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Full engagement data delivered within 15 days.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">10.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible under Schedule VII CSR mandates for STEM education.</div></div></div>
-        </div>
-      </div>
-
-      <!-- CANSAT PANEL -->
-      <div class="tier-panel" id="panel-cansat">
-        <div class="tier-panel-header">
-          <div><div class="tier-name">CanSat Sponsor</div><div class="tier-slots">Tier II &nbsp;·&nbsp; 1 Slot Available</div></div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">CanSat Event Co-Naming</div><div class="tb-desc">Your brand attached to India's premier student satellite competition.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as CanSat Sponsor across all collaterals.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Judging Rights</div><div class="tb-desc">Nominate a representative as CanSat judge.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Stall Setup Rights</div><div class="tb-desc">Branded presence on IIST campus during the festival.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Swag Distribution</div><div class="tb-desc">Distribute branded merchandise to CanSat participants.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Full engagement data within 15 days.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">CSR Recognition</div><div class="tb-desc">Eligible under Schedule VII STEM education mandate.</div></div></div>
-        </div>
-      </div>
-
-      <!-- WORKSHOP PANEL -->
-      <div class="tier-panel" id="panel-workshop">
-        <div class="tier-panel-header">
-          <div><div class="tier-name">Workshop Sponsor</div><div class="tier-slots">Tier III &nbsp;·&nbsp; Multiple Slots</div></div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Workshop Co-Naming</div><div class="tb-desc">Your brand on a dedicated workshop session.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Logo on Collaterals</div><div class="tb-desc">Listed across banners, posts, and campaign materials.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Stall Rights at Workshop</div><div class="tb-desc">Branded presence at workshop sessions.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across all Conscientia channels.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Engagement data within 15 days.</div></div></div>
-        </div>
-      </div>
-
-      <!-- SOCIAL CAUSE PANEL -->
-      <div class="tier-panel" id="panel-social">
-        <div class="tier-panel-header">
-          <div><div class="tier-name">Social Cause Sponsor</div><div class="tier-slots">Tier III &nbsp;·&nbsp; Open Slots</div></div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Official Social Impact Partner</div><div class="tb-desc">Listed across all collaterals as Official Social Impact Partner.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Panel Discussion & Booth</div><div class="tb-desc">Dedicated space for awareness building and outreach.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Cause-Focused Event/Workshop</div><div class="tb-desc">Dedicated cause-focused event or workshop.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Logo on All Materials</div><div class="tb-desc">Logo on banners, posts, campaign materials.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">05.</div><div><div class="tb-title">Student Club Collaboration</div><div class="tb-desc">Collaborative initiative with IIST student clubs.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">06.</div><div><div class="tb-title">On-Ground Activation Space</div><div class="tb-desc">CSR mandate aligned activation on campus.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">07.</div><div><div class="tb-title">Speaking Slot</div><div class="tb-desc">Address audience at cause-related sessions.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">08.</div><div><div class="tb-title">Co-Branded Outreach</div><div class="tb-desc">Co-branded outreach across Conscientia's platforms.</div></div></div>
-        </div>
-      </div>
-
-      <!-- EXPO PANEL -->
-      <div class="tier-panel" id="panel-expo">
-        <div class="tier-panel-header">
-          <div><div class="tier-name">Expo Sponsor</div><div class="tier-slots">Tier IV &nbsp;·&nbsp; Open Slots</div></div>
-          <div class="tier-price">₹ [TBC]</div>
-        </div>
-        <div class="tier-benefits-grid">
-          <div class="tier-benefit"><div class="tb-num">01.</div><div><div class="tb-title">Branded Booth in Expo Zone</div><div class="tb-desc">Full setup support in the main expo area.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">02.</div><div><div class="tb-title">Website & Social Listing</div><div class="tb-desc">Listed as Expo Sponsor across all collaterals.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">03.</div><div><div class="tb-title">Social Media Mentions</div><div class="tb-desc">Dedicated posts across Conscientia channels.</div></div></div>
-          <div class="tier-benefit"><div class="tb-num">04.</div><div><div class="tb-title">Post-Event Report</div><div class="tb-desc">Engagement data within 15 days.</div></div></div>
-        </div>
-      </div>
-
-      <!-- OVERVIEW TABLE -->
-      <div class="tier-table-wrap reveal" style="margin-top: 56px;">
-        <table class="tier-table">
-          <thead>
-            <tr>
-              <th>Sponsorship Type</th>
-              <th>Slots</th>
-              <th>Tier</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="t1"><td>Title Sponsor</td><td>1</td><td><span class="tier-tag">TIER I</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t2"><td>Associate Sponsor</td><td>2</td><td><span class="tier-tag">TIER II</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t2"><td>Hackathon Sponsor</td><td>3</td><td><span class="tier-tag">TIER II</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t2"><td>CanSat Sponsor</td><td>1</td><td><span class="tier-tag">TIER II</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t3"><td>Workshop Sponsor</td><td>—</td><td><span class="tier-tag">TIER III</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t3"><td>Event Sponsor</td><td>—</td><td><span class="tier-tag">TIER III</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t3"><td>Social Cause</td><td>—</td><td><span class="tier-tag">TIER III</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t4"><td>Expo Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t4"><td>Travel Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t4"><td>Hospitality Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t4"><td>Media Partner</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t4"><td>Logistics Sponsor</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
-            <tr class="t4"><td>Educational Partner</td><td>—</td><td><span class="tier-tag">TIER IV</span></td><td>₹ [TBC]</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-family:var(--ff-body);font-style:italic;font-size:0.82rem;color:var(--muted);margin-top:16px;" class="reveal">All sponsorships include a post-event engagement report delivered within 15 days of the festival.</p>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════ PAST SPONSORS -->
-  <section id="sponsors" style="padding: 100px 0;">
-    <div class="inner">
-      <p class="label reveal">11 — Previous Sponsors</p>
-      <h2 style="font-family:var(--ff-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin-bottom:8px;" class="reveal reveal-delay-1">They trusted us.</h2>
-      <p style="font-family:var(--ff-body);font-style:italic;color:var(--muted);margin-bottom:40px;" class="reveal reveal-delay-2">Brands from space, auto, gaming, FMCG, and finance.</p>
-    </div>
-    
-    <div class="sponsors-marquee-wrap reveal">
-      <div class="sponsors-marquee">
-        <div class="marquee-track">
-          <div class="sponsor-chip"><img src="https://cdn.prod.website-files.com/67fd1716df7556ab97191c1c/67ff42c9251ae6b792c9cfc4_Skyroot%20Logo.webp" alt="Skyroot Aerospace" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://framerusercontent.com/assets/ovw9sGfYYEv4xyzpXgGSMAvwQ.png" alt="Bellatrix Aerospace"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxbV1uRvUNiuhfUAaYN_a0ngtobRyayGv4IQ&s" alt="CDAC"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSldTOwKw3HL0UIYEXr9Qqogplm5oBAX0ztYg&s" alt="Satsure" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjta2-T6dd9T9Q0HWtogyzq1DSumo6EPu-8A&s" alt="NSIL" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Logo_SKIFI.png" alt="SkyFi" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://rocketeers.in/wp-content/uploads//5-02-1.png" alt="Rocketeers"></div>
-          <div class="sponsor-chip"><img src="https://d502jbuhuh9wk.cloudfront.net/logos/643fcab0e4b0dacc7ae246bf.png?v=12" alt="Pacelab"></div>
-          <div class="sponsor-chip"><img src="https://www.aeronsystems.com/assets/images/resources/aeron%20Logo%20white.webp" alt="Aeron"></div>
-          <div class="sponsor-chip"><img src="https://quadratech.in/logo.png" alt="Quadratech"></div>
-          <div class="sponsor-chip"><img src="https://static.wixstatic.com/media/b99f19_971ff836cb0a491180f8bc81bff40442~mv2.png/v1/fill/w_376,h_212,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/NOPO(White).png" alt="Nobo Nanotechnologies"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgGNeDpEjlLIawpPBPe2NfjfVv_MfkuKNDxQ&s" alt="Aeronautical Society of India" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://cimg1.ibsrv.net/ibimg/hgm/1920x1080-1/100/715/vw-logo_100715297.jpg" alt="Volkswagen"></div>
-          <div class="sponsor-chip"><img src="https://images.indianexpress.com/2022/07/Krafton_Logo1.jpg?w=1200" alt="Krafton"></div>
-          <div class="sponsor-chip"><img src="https://nodwingaming.com/wp-content/uploads/2024/10/Nodwin-logonew-1.png" alt="Nodwin Gaming"></div>
-          <div class="sponsor-chip"><img src="https://www.wowmomo.com/wp-content/uploads/2019/09/Wow_logo_website.png" alt="WOW Momo"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjIlDTuzKjg_d9bt16VCspqhfppIyx0okuYg&s" alt="Domino's"></div>
-          <div class="sponsor-chip"><img src="https://images.financialexpressdigital.com/2026/01/Copy-of-Copy-of-Gallery-25.jpg" alt="Union Bank of India"></div>
-        </div>
-        <div class="marquee-track">
-          <div class="sponsor-chip"><img src="https://cdn.prod.website-files.com/67fd1716df7556ab97191c1c/67ff42c9251ae6b792c9cfc4_Skyroot%20Logo.webp" alt="Skyroot Aerospace" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://framerusercontent.com/assets/ovw9sGfYYEv4xyzpXgGSMAvwQ.png" alt="Bellatrix Aerospace"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxbV1uRvUNiuhfUAaYN_a0ngtobRyayGv4IQ&s" alt="CDAC"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSldTOwKw3HL0UIYEXr9Qqogplm5oBAX0ztYg&s" alt="Satsure" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjta2-T6dd9T9Q0HWtogyzq1DSumo6EPu-8A&s" alt="NSIL" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Logo_SKIFI.png" alt="SkyFi" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://rocketeers.in/wp-content/uploads//5-02-1.png" alt="Rocketeers"></div>
-          <div class="sponsor-chip"><img src="https://d502jbuhuh9wk.cloudfront.net/logos/643fcab0e4b0dacc7ae246bf.png?v=12" alt="Pacelab"></div>
-          <div class="sponsor-chip"><img src="https://www.aeronsystems.com/assets/images/resources/aeron%20Logo%20white.webp" alt="Aeron"></div>
-          <div class="sponsor-chip"><img src="https://quadratech.in/logo.png" alt="Quadratech"></div>
-          <div class="sponsor-chip"><img src="https://static.wixstatic.com/media/b99f19_971ff836cb0a491180f8bc81bff40442~mv2.png/v1/fill/w_376,h_212,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/NOPO(White).png" alt="Nobo Nanotechnologies"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgGNeDpEjlLIawpPBPe2NfjfVv_MfkuKNDxQ&s" alt="Aeronautical Society of India" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-          <div class="sponsor-chip"><img src="https://cimg1.ibsrv.net/ibimg/hgm/1920x1080-1/100/715/vw-logo_100715297.jpg" alt="Volkswagen"></div>
-          <div class="sponsor-chip"><img src="https://images.indianexpress.com/2022/07/Krafton_Logo1.jpg?w=1200" alt="Krafton"></div>
-          <div class="sponsor-chip"><img src="https://nodwingaming.com/wp-content/uploads/2024/10/Nodwin-logonew-1.png" alt="Nodwin Gaming"></div>
-          <div class="sponsor-chip"><img src="https://www.wowmomo.com/wp-content/uploads/2019/09/Wow_logo_website.png" alt="WOW Momo"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjIlDTuzKjg_d9bt16VCspqhfppIyx0okuYg&s" alt="Domino's"></div>
-          <div class="sponsor-chip"><img src="https://logo.clearbit.com/unionbankofindia.co.in" alt="Union Bank of India"></div>
-        </div>
+      <div class="contact-cards reveal reveal-delay-2">
+        <div class="contact-card"><div class="cc-role">Finance Head</div><div class="cc-name">Gaurav Gill</div><div class="cc-phone">+91 70156 07428</div></div>
+        <div class="contact-card"><div class="cc-role">Finance Head</div><div class="cc-name">Saatwik Chatkara</div><div class="cc-phone">+91 84483 27803</div></div>
+        <div class="contact-card"><div class="cc-role">Finance Head</div><div class="cc-name">Sajan U</div><div class="cc-phone">+91 88388 64694</div></div>
+        <div class="contact-card"><div class="cc-role" style="color:var(--muted);">Vice Chief Coordinator</div><div class="cc-name">Chirag</div><div class="cc-phone">+91 98677 71460</div></div>
+        <div class="contact-card"><div class="cc-role" style="color:var(--muted);">Chief Coordinator</div><div class="cc-name">Niranjan Patil</div><div class="cc-phone">+91 98814 16709</div></div>
       </div>
     </div>
-    
-    <div class="sponsors-marquee-wrap reveal" style="margin-top: 12px;">
-      <div class="sponsors-marquee sponsors-marquee2">
-        <div class="marquee-track">
-          <div class="sponsor-chip"><img src="https://healthinsurancesahihai.com/wp-content/uploads/2024/02/nialogo-org.jpg" alt="New India Assurance"></div>
-          <div class="sponsor-chip"><img src="data:image/jpeg;base64,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" alt="Milma"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXVq2v1csTZcJ_gYS0hl61j5vwq_Rl1o6yw&s" alt="Grahaa"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT057NUUlpukJQj_robp-4H58anDeAR7tHw5A&s" alt="SPACE (Empowering Life)"></div>
-          <div class="sponsor-chip"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7vGH8eWqpj5tbJcftP7rhssHZhJbjBBuFRQ&s" alt="TDI" style="background-color: white; padding: 4px; border-radius: 4px;"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- ═══════════════════════════════════════ CONTACT -->
-  <section id="contact">
-    <div class="inner">
-      <div class="contact-grid">
-        <div>
-          <p class="label reveal">12 — Contact</p>
-          <h2 class="contact-heading reveal reveal-delay-1">Let's<br><span class="gold">talk.</span></h2>
-          <p class="contact-body reveal reveal-delay-2">Ready to be part of India's most exciting space-tech festival? Reach out to our finance team and we'll get back to you within 24 hours.</p>
-          <div class="contact-email reveal reveal-delay-3" style="cursor:pointer;" onclick="copyEmail()">
-            financeteam.conscientia@gmail.com <span style="font-size:0.5rem;opacity:0.5;margin-left:12px;">CLICK TO COPY</span>
-          </div>
-          <div style="margin-top: 32px;" class="reveal reveal-delay-4">
-            <p class="label label-muted">Find us online</p>
-            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
-              <a href="https://conscientiaiist.co.in" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ www.conscientiaiist.co.in</a>
-              <a href="#" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ instagram.com/conscientia.iist</a>
-              <a href="#" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ youtube.com/Conscientia IIST</a>
-              <a href="#" style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">↗ linkedin.com/conscientia-iist</a>
-            </div>
-          </div>
-        </div>
-        <div class="contact-cards reveal reveal-delay-2">
-          <div class="contact-card">
-            <div class="cc-role">Finance Head</div>
-            <div class="cc-name">Gaurav Gill</div>
-            <div class="cc-phone">+91 70156 07428</div>
-          </div>
-          
-          <div class="contact-card">
-            <div class="cc-role">Finance Head</div>
-            <div class="cc-name">Saatwik Chatkara</div>
-            <div class="cc-phone">+91 84483 27803</div>
-          </div>
+  </div>
+</section>
 
-          <div class="contact-card">
-            <div class="cc-role" style="color:var(--muted);">Finance Head</div>
-            <div class="cc-name">Sajan U</div>
-            <div class="cc-phone">+91 88388 64694</div>
-          </div>
-          
-          <div class="contact-card" style="--gold:var(--blue);">
-            <div class="cc-role" style="color:var(--muted);">Vice Chief Coordinator</div>
-            <div class="cc-name">Chirag</div>
-            <div class="cc-phone">+91 98677 71460</div>
-          </div>
-          
-          <div class="contact-card" style="--gold:var(--blue);">
-            <div class="cc-role" style="color:var(--muted);">Chief Coordinator</div>
-            <div class="cc-name">Niranjan Patil</div>
-            <div class="cc-phone">+91 98814 16709</div>
-          </div>
-        </div>
-        </div>
-      </div>
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">CONSCIENTIA</div>
+    <div class="footer-links">
+      <a href="#institution">Institution</a>
+      <a href="#stats">Numbers</a>
+      <a href="#why">Opportunity</a>
+      <a href="#tiers">Tiers</a>
+      <a href="#contact">Contact</a>
+      <a href="mailto:financeteam.conscientia@gmail.com">Email Us</a>
     </div>
-  </section>
+  </div>
+  <div class="footer-bottom">
+    <span>Indian Institute of Space Science and Technology · Thiruvananthapuram, Kerala · 8.5°N 76.9°E</span>
+    <span>Department of Space, Govt. of India · 17th Edition · 2026</span>
+  </div>
+</footer>
 
-  <!-- ─── FOOTER ─── -->
-  <footer>
-    <div class="footer-top">
-      <div class="footer-brand">CONSCIENTIA</div>
-      <div class="footer-links">
-        <a href="#institution">Institution</a>
-        <a href="#stats">Numbers</a>
-        <a href="#why">Opportunity</a>
-        <a href="#tiers">Tiers</a>
-        <a href="#contact">Contact</a>
-        <a href="mailto:financeteam.conscientia@gmail.com">Email Us</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>Indian Institute of Space Science and Technology · Thiruvananthapuram, Kerala · 8.5°N 76.9°E</span>
-      <span>Department of Space, Govt. of India · 17th Edition · 2026</span>
-    </div>
-  </footer>
+<script>
+(function(){
+  const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');
+  let W,H,stars=[];
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init(){ stars=[]; for(let i=0;i<180;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.2,a:Math.random()*0.12+0.02,twinkle:Math.random()*Math.PI*2}); }
+  function draw(){ ctx.clearRect(0,0,W,H); stars.forEach(s=>{ s.twinkle+=0.012; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=`rgba(240,237,230,${s.a*(0.7+0.3*Math.sin(s.twinkle))})`; ctx.fill(); }); requestAnimationFrame(draw); }
+  window.addEventListener('resize',()=>{ resize(); init(); });
+  resize(); init(); draw();
+})();
 
-  <!-- ─── SCRIPTS ─── -->
-  <script>
-  /* ─── STARFIELD ─── */
-  (function() {
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let W, H, stars = [];
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    function init() {
-      stars = [];
-      for (let i = 0; i < 180; i++) {
-        stars.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          r: Math.random() * 1.2 + 0.2,
-          a: Math.random() * 0.12 + 0.02,
-          speed: Math.random() * 0.15 + 0.03,
-          twinkle: Math.random() * Math.PI * 2
-        });
-      }
-    }
-    function draw(t) {
-      ctx.clearRect(0, 0, W, H);
-      stars.forEach(s => {
-        s.twinkle += 0.012;
-        const alpha = s.a * (0.7 + 0.3 * Math.sin(s.twinkle));
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(240,237,230,${alpha})`;
-        ctx.fill();
-      });
-      requestAnimationFrame(draw);
-    }
-    window.addEventListener('resize', () => { resize(); init(); });
-    resize(); init(); draw();
-  })();
+const cursor=document.getElementById('cursor'),cursorRing=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cursor.style.left=mx-5+'px'; cursor.style.top=my-5+'px'; });
+(function animRing(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; cursorRing.style.left=rx-18+'px'; cursorRing.style.top=ry-18+'px'; requestAnimationFrame(animRing); })();
 
-  /* ─── CURSOR ─── */
-  const cursor = document.getElementById('cursor');
-  const cursorRing = document.getElementById('cursor-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 5 + 'px';
-    cursor.style.top = my - 5 + 'px';
-  });
-  (function animRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    cursorRing.style.left = rx - 18 + 'px';
-    cursorRing.style.top = ry - 18 + 'px';
-    requestAnimationFrame(animRing);
-  })();
+const bar=document.getElementById('progress');
+window.addEventListener('scroll',()=>{ bar.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%'; });
 
-  /* ─── PROGRESS BAR ─── */
-  const bar = document.getElementById('progress');
-  window.addEventListener('scroll', () => {
-    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-    bar.style.width = pct + '%';
-  });
+const io=new IntersectionObserver(entries=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } }); },{ threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  /* ─── REVEAL ON SCROLL ─── */
-  const revealEls = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => io.observe(el));
+function switchTier(id,btn){
+  document.querySelectorAll('.tier-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tier-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
 
-  /* ─── TIER TABS ─── */
-  function switchTier(id, btn) {
-    document.querySelectorAll('.tier-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tier-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('panel-' + id).classList.add('active');
-    btn.classList.add('active');
-  }
+function copyEmail(){
+  navigator.clipboard.writeText('financeteam.conscientia@gmail.com').then(()=>{ const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); });
+}
 
-  /* ─── EMAIL COPY ─── */
-  function copyEmail() {
-    navigator.clipboard.writeText('financeteam.conscientia@gmail.com').then(() => {
-      const t = document.getElementById('toast');
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
-    });
-  }
-
-  /* ─── NAV ACTIVE STATE ─── */
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
-    });
-  }, { passive: true });
-  </script>
-  </body>
-  </html>
+const sections=document.querySelectorAll('section[id]'),navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{ let cur=''; sections.forEach(s=>{ if(window.scrollY>=s.offsetTop-100) cur=s.id; }); navLinks.forEach(a=>{ a.style.color=a.getAttribute('href')==='#'+cur?'var(--gold)':''; }); },{passive:true});
+</script>
+</body>
+</html>
